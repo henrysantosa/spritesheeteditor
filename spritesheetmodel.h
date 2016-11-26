@@ -5,24 +5,39 @@
 #include <QVector>
 #include <QGraphicsRectItem>
 
+#include <memory>
+
+struct Hitbox
+{
+   Hitbox(std::string guid, QGraphicsRectItem& hitboxRect);
+   ~Hitbox() = default;
+   std::string guid;
+   QGraphicsRectItem* hitboxRect;
+};
+
 class SpriteSheetModel : public QObject
 {
-    Q_OBJECT
+   Q_OBJECT
 
 public:
-    SpriteSheetModel();
-    ~SpriteSheetModel() = default;
+   SpriteSheetModel();
+   ~SpriteSheetModel() = default;
 
-    QVector<QGraphicsRectItem*> hitboxes;
-    void serialize();
+   void serialize();
+   int getSize();
+
+   void removeHitbox(const std::string& guid);
 
 public slots:
-    void addNewHitbox(QGraphicsRectItem& hitbox);
+   void addNewHitbox(std::string& guid, QGraphicsRectItem& hitboxRect);
 
 signals:
-    void hitboxAdded(QGraphicsRectItem& hitbox);
+   void hitboxAdded(Hitbox& hitbox);
+   void hitboxRemoved(Hitbox& hitbox);
 
 private:
+   int size;
+   std::map<std::string, std::unique_ptr<Hitbox>> hitboxes;
 };
 
 #endif // SPRITESHEETMODEL_H

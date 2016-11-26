@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QListWidget>
+#include <QKeyEvent>
 
 #include "spritesheetmodel.h"
 
@@ -14,10 +15,13 @@ public:
     HitboxList(SpriteSheetModel& model);
 
 public slots:
-    void updateList();
+    void addToList(Hitbox& hitbox);
 
 private:
     SpriteSheetModel& model;
+
+protected:
+    void keyPressEvent(QKeyEvent* event) override;
 };
 
 #endif // HITBOXLIST_H

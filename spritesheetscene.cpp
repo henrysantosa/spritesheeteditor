@@ -19,15 +19,12 @@ void SpriteSheetScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     QPen outlinePen(Qt::red);
     auto rectangle = addRect(x, y, width, height, outlinePen);
 
-    model.addNewHitbox(*rectangle);
+    model.addNewHitbox(std::to_string(model.getSize()), *rectangle);
+}
 
-//    if(model.hitboxes.size() > 1)
-//    {
-//        int index = 0;
-//        auto toRemove = model.hitboxes[index];
-//        model.hitboxes.erase(model.hitboxes.begin() + index);
-//        removeItem(toRemove);
-//    }
+void SpriteSheetScene::removeHitbox(Hitbox &hitbox)
+{
+   removeItem(hitbox.hitboxRect);
 }
 
 void SpriteSheetScene::loadImage(QString path)

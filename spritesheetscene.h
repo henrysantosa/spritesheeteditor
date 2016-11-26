@@ -13,10 +13,16 @@
 
 class SpriteSheetScene : public QGraphicsScene
 {
+Q_OBJECT
+
 public:
     SpriteSheetScene(SpriteSheetModel& model);
     void loadImage(QString path);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+
+public slots:
+    void removeHitbox(Hitbox& hitbox);
+
 private:
     SpriteSheetModel& model;
     QImage image;
