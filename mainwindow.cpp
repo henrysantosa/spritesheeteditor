@@ -4,18 +4,19 @@
 
 MainWindow::MainWindow()
     : spriteSheetModel()
+    , frame()
 {
-   scene = std::make_unique<SpriteSheetScene>(spriteSheetModel);
+   scene = std::make_unique<SpriteSheetScene>(frame);
    graphicsView = std::make_unique<QGraphicsView>(scene.get());
    scene->loadImage("C:\\Dev\\test.png");
 
-   hitboxList = std::make_unique<HitboxList>(spriteSheetModel);
+   hitboxList = std::make_unique<HitboxList>(frame);
 
-   QObject::connect(&spriteSheetModel, &SpriteSheetModel::hitboxAdded,
+   QObject::connect(&frame, &SpriteSheet::Frame::boxAdded,
                     hitboxList.get(), &HitboxList::addToList);
 
-   QObject::connect(&spriteSheetModel, &SpriteSheetModel::hitboxRemoved,
-                    scene.get(), &SpriteSheetScene::removeHitbox);
+   QObject::connect(&frame, &SpriteSheet::Frame::boxRemoved,
+                    scene.get(), &SpriteSheetScene::removeBox);
 }
 
 void MainWindow::render()

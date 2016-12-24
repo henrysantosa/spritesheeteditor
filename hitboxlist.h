@@ -12,13 +12,13 @@ class HitboxList : public QListWidget
    Q_OBJECT
 
 public:
-    HitboxList(SpriteSheetModel& model);
+    HitboxList(SpriteSheet::Frame& frame);
 
 public slots:
-    void addToList(Hitbox& hitbox);
+    void addToList(SpriteSheet::Box& box);
 
 private:
-    SpriteSheetModel& model;
+    SpriteSheet::Frame& frame;
 
 protected:
     void keyPressEvent(QKeyEvent* event) override;

@@ -1,33 +1,53 @@
 #include "spritesheetmodel.h"
 
-Hitbox::Hitbox(std::string guid, QGraphicsRectItem& hitboxRect)
+using namespace SpriteSheet;
+
+Box::Box(std::string guid, QGraphicsRectItem& boxRect)
    : guid(guid)
-   , hitboxRect(&hitboxRect)
+   , boxRect(&boxRect)
 {
 }
 
+Frame::Frame()
+   : boxes()
+   , size(0)
+{
+
+}
+
+void Frame::addNewBox(std::string& guid, QGraphicsRectItem& boxRect)
+{
+   boxes[guid] = std::make_unique<Box>(guid, boxRect);
+   ++size;
+   emit boxAdded(*boxes[guid]);
+}
+
+void Frame::removeBox(const std::string& guid)
+{
+   emit boxRemoved(*boxes[guid]);
+   boxes.erase(guid);
+//   --size; // don't want to overwrite until we figure out how to get GUIDs working
+}
+
+int Frame::getSize()
+{
+   return size;
+}
+
 SpriteSheetModel::SpriteSheetModel()
-   : hitboxes()
+   : frames()
    , size(0)
 {
 }
 
 void SpriteSheetModel::serialize()
 {
+   //TODO: Implement
 }
 
-void SpriteSheetModel::addNewHitbox(std::string& guid, QGraphicsRectItem& hitboxRect)
+void SpriteSheetModel::addNewFrame(Frame& frame)
 {
-   hitboxes[guid] = std::make_unique<Hitbox>(guid, hitboxRect);
-   ++size;
-   emit hitboxAdded(*hitboxes[guid]);
-}
-
-void SpriteSheetModel::removeHitbox(const std::string& guid)
-{
-   emit hitboxRemoved(*hitboxes[guid]);
-   hitboxes.erase(guid);
-//   --size; // don't want to overwrite until we figure out how to get GUIDs working
+   frames.emplace_back(&frame);
 }
 
 int SpriteSheetModel::getSize()

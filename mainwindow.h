@@ -33,7 +33,9 @@ private:
     std::unique_ptr<SpriteSheetScene> scene;
     std::unique_ptr<QGraphicsView> graphicsView;
     std::unique_ptr<HitboxList> hitboxList;
-    SpriteSheetModel spriteSheetModel;
+
+    SpriteSheet::SpriteSheetModel spriteSheetModel;
+    SpriteSheet::Frame frame; // TODO make multi frame implementation
 };
 
 #endif // MAINWINDOW_H

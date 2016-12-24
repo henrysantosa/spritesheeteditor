@@ -7,37 +7,58 @@
 
 #include <memory>
 
-struct Hitbox
+namespace SpriteSheet
 {
-   Hitbox(std::string guid, QGraphicsRectItem& hitboxRect);
-   ~Hitbox() = default;
-   std::string guid;
-   QGraphicsRectItem* hitboxRect;
-};
+   struct Box
+   {
+      Box(std::string guid, QGraphicsRectItem& boxRect);
+      ~Box() = default;
+      std::string guid;
+      QGraphicsRectItem* boxRect;
+   };
 
-class SpriteSheetModel : public QObject
-{
-   Q_OBJECT
+   class Frame : public QObject
+   {
+      Q_OBJECT
 
-public:
-   SpriteSheetModel();
-   ~SpriteSheetModel() = default;
+      std::map<std::string, std::unique_ptr<Box>> boxes;
 
-   void serialize();
-   int getSize();
+      public:
+         Frame();
+         ~Frame() = default;
 
-   void removeHitbox(const std::string& guid);
+         void removeBox(const std::string& guid);
+         int getSize();
 
-public slots:
-   void addNewHitbox(std::string& guid, QGraphicsRectItem& hitboxRect);
+      public slots:
+         void addNewBox(std::string& guid, QGraphicsRectItem& boxRect);
 
-signals:
-   void hitboxAdded(Hitbox& hitbox);
-   void hitboxRemoved(Hitbox& hitbox);
+      signals:
+         void boxAdded(Box& box);
+         void boxRemoved(Box& box);
 
-private:
-   int size;
-   std::map<std::string, std::unique_ptr<Hitbox>> hitboxes;
-};
+      private:
+         int size;
+   };
+
+   class SpriteSheetModel : public QObject
+   {
+      Q_OBJECT
+
+   public:
+      SpriteSheetModel();
+      ~SpriteSheetModel() = default;
+
+      void serialize();
+      int getSize();
+
+      void addNewFrame(Frame& frame);
+
+   private:
+      int size;
+      std::vector<Frame*> frames;
+   };
+
+}
 
 #endif // SPRITESHEETMODEL_H

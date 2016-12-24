@@ -1,13 +1,13 @@
 #include "hitboxlist.h"
 
-HitboxList::HitboxList(SpriteSheetModel& model)
-   : model(model)
+HitboxList::HitboxList(SpriteSheet::Frame& frame)
+   : frame(frame)
 {
 }
 
-void HitboxList::addToList(Hitbox& hitbox)
+void HitboxList::addToList(SpriteSheet::Box& box)
 {
-   new QListWidgetItem(tr(hitbox.guid.c_str()), this);
+   new QListWidgetItem(tr(box.guid.c_str()), this);
 }
 
 void HitboxList::keyPressEvent(QKeyEvent *event)
@@ -17,7 +17,7 @@ void HitboxList::keyPressEvent(QKeyEvent *event)
       auto selected = this->selectedItems();
       foreach(QListWidgetItem* item, selected)
       {
-         model.removeHitbox(item->text().toStdString());
+         frame.removeBox(item->text().toStdString());
          delete this->takeItem(this->row(item));
       }
    }

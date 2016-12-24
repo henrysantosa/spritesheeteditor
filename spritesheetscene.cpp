@@ -1,7 +1,7 @@
 #include "spritesheetscene.h"
 
-SpriteSheetScene::SpriteSheetScene(SpriteSheetModel& model)
-   : model(model)
+SpriteSheetScene::SpriteSheetScene(SpriteSheet::Frame& frame)
+   : frame(frame)
 {
 }
 
@@ -17,14 +17,21 @@ void SpriteSheetScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     auto y = std::min(upPos.y(), downPos.y());
 
     QPen outlinePen(Qt::red);
-    auto rectangle = addRect(x, y, width, height, outlinePen);
 
-    model.addNewHitbox(std::to_string(model.getSize()), *rectangle);
+    if(width == 0 || height == 0)
+       return;
+
+    auto rectangle = addRect(x, y, width, height, outlinePen);
+//    rectangle->setFlag(QGraphicsItem::ItemIsMovable);
+//    rectangle->setFlag(QGraphicsItem::ItemIsSelectable);
+//    rectangle->setFlag(QGraphicsItem::ItemIsFocusable);
+
+    frame.addNewBox(std::to_string(frame.getSize()), *rectangle);
 }
 
-void SpriteSheetScene::removeHitbox(Hitbox &hitbox)
+void SpriteSheetScene::removeBox(SpriteSheet::Box &box)
 {
-   removeItem(hitbox.hitboxRect);
+   removeItem(box.boxRect);
 }
 
 void SpriteSheetScene::loadImage(QString path)
