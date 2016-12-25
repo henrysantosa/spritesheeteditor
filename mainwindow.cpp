@@ -1,6 +1,5 @@
 #include "mainwindow.h"
-#include <memory>
-#include <QListWidgetItem>
+
 
 MainWindow::MainWindow()
     : spriteSheetModel()
@@ -12,15 +11,21 @@ MainWindow::MainWindow()
 
    hitboxList = std::make_unique<HitboxList>(frame);
 
+   boxAttributeWidget = std::make_unique<SpriteSheet::BoxAttributeWidget>(frame);
+
    QObject::connect(&frame, &SpriteSheet::Frame::boxAdded,
                     hitboxList.get(), &HitboxList::addToList);
 
    QObject::connect(&frame, &SpriteSheet::Frame::boxRemoved,
                     scene.get(), &SpriteSheetScene::removeBox);
+
+   QObject::connect(hitboxList.get(), &HitboxList::itemClicked,
+                    boxAttributeWidget.get(), &SpriteSheet::BoxAttributeWidget::setNewBox);
 }
 
 void MainWindow::render()
 {
    graphicsView->show();
    hitboxList->show();
+   boxAttributeWidget->show();
 }

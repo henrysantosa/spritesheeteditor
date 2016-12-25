@@ -15,13 +15,17 @@ namespace SpriteSheet
       ~Box() = default;
       std::string guid;
       QGraphicsRectItem* boxRect;
+
+//    how to get all attributes
+//    auto xCoord = boxRect.rect().x();
+//    auto yCoord = boxRect.rect().y();
+//    auto height = boxRect.rect().height();
+//    auto width  = boxRect.rect().width();
    };
 
    class Frame : public QObject
    {
       Q_OBJECT
-
-      std::map<std::string, std::unique_ptr<Box>> boxes;
 
       public:
          Frame();
@@ -29,6 +33,8 @@ namespace SpriteSheet
 
          void removeBox(const std::string& guid);
          int getSize();
+
+         std::map<std::string, std::unique_ptr<Box>> boxes;
 
       public slots:
          void addNewBox(std::string& guid, QGraphicsRectItem& boxRect);
@@ -39,6 +45,9 @@ namespace SpriteSheet
 
       private:
          int size;
+         int frameLen;
+         float xOffset; // rendering offset
+         float yOffset; // rendering offset
    };
 
    class SpriteSheetModel : public QObject

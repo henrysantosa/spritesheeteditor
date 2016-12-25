@@ -18,6 +18,10 @@ Frame::Frame()
 void Frame::addNewBox(std::string& guid, QGraphicsRectItem& boxRect)
 {
    boxes[guid] = std::make_unique<Box>(guid, boxRect);
+
+   // this is how you move a rect
+   //boxes["0"]->boxRect->setRect(100 + size*10, 100, 100, 100);
+
    ++size;
    emit boxAdded(*boxes[guid]);
 }
