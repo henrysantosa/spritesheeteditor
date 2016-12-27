@@ -1,11 +1,15 @@
 #ifndef BOXATTRIBUTEWIDGET_H
 #define BOXATTRIBUTEWIDGET_H
 
+#include <QtWidgets>
 #include <QDoubleSpinBox>
 #include <QListWidgetItem>
 #include <QGroupBox>
 
+#include "limits.h"
+
 #include "spritesheetmodel.h"
+#include "boxattributewidget.h"
 
 namespace SpriteSheet {
    class BoxAttributeWidget : public QWidget
@@ -17,6 +21,12 @@ namespace SpriteSheet {
 
    public slots:
       void setNewBox(QListWidgetItem *item);
+
+   private slots:
+      void updateBoxWidth(double width);
+      void updateBoxHeight(double width);
+      void updateBoxXPos(double width);
+      void updateBoxYPos(double width);
 
    private:
       std::unique_ptr<QDoubleSpinBox> boxWidthSpinBox;

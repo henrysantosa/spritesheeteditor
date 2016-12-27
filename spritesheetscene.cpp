@@ -22,6 +22,7 @@ void SpriteSheetScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
        return;
 
     auto rectangle = addRect(x, y, width, height, outlinePen);
+
 //    rectangle->setFlag(QGraphicsItem::ItemIsMovable);
 //    rectangle->setFlag(QGraphicsItem::ItemIsSelectable);
 //    rectangle->setFlag(QGraphicsItem::ItemIsFocusable);

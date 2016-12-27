@@ -1,5 +1,5 @@
-#ifndef HITBOXLIST_H
-#define HITBOXLIST_H
+#ifndef BOXLISTWIDGET_H
+#define BOXLISTWIDGET_H
 
 #include <QObject>
 #include <QListWidget>
@@ -7,12 +7,12 @@
 
 #include "spritesheetmodel.h"
 
-class HitboxList : public QListWidget
+class BoxListWidget : public QListWidget
 {
    Q_OBJECT
 
 public:
-    HitboxList(SpriteSheet::Frame& frame);
+    BoxListWidget(SpriteSheet::Frame& frame);
 
 public slots:
     void addToList(SpriteSheet::Box& box);
@@ -24,4 +24,4 @@ protected:
     void keyPressEvent(QKeyEvent* event) override;
 };
 
-#endif // HITBOXLIST_H
+#endif // BOXLISTWIDGET_H

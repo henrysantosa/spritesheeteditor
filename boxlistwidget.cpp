@@ -1,16 +1,16 @@
-#include "hitboxlist.h"
+#include "boxlistwidget.h"
 
-HitboxList::HitboxList(SpriteSheet::Frame& frame)
+BoxListWidget::BoxListWidget(SpriteSheet::Frame& frame)
    : frame(frame)
 {
 }
 
-void HitboxList::addToList(SpriteSheet::Box& box)
+void BoxListWidget::addToList(SpriteSheet::Box& box)
 {
    new QListWidgetItem(tr(box.guid.c_str()), this);
 }
 
-void HitboxList::keyPressEvent(QKeyEvent *event)
+void BoxListWidget::keyPressEvent(QKeyEvent *event)
 {
    if(event->key() == Qt::Key_Delete)
    {

@@ -16,13 +16,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     spritesheetmodel.cpp \
     spritesheetscene.cpp \
-    hitboxlist.cpp \
-    boxattributewidget.cpp
+    boxattributewidget.cpp \
+    boxlistwidget.cpp
 
 HEADERS  += mainwindow.h \
     spritesheetmodel.h \
     spritesheetscene.h \
-    hitboxlist.h \
-    boxattributewidget.h
+    boxattributewidget.h \
+    boxlistwidget.h
 
 FORMS    += mainwindow.ui
