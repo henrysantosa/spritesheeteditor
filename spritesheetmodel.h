@@ -4,23 +4,31 @@
 #include <QObject>
 #include <QVector>
 #include <QGraphicsRectItem>
+#include <QPixmap>
 
 #include <memory>
 
 namespace SpriteSheet
 {
-   struct Box
+   class Box
    {
-      Box(std::string guid, QGraphicsRectItem& boxRect);
-      ~Box() = default;
-      std::string guid;
-      QGraphicsRectItem* boxRect;
+      public:
+         Box(std::string guid, QGraphicsRectItem& boxRect);
+         ~Box() = default;
 
-//    how to get all attributes
-//    auto xCoord = boxRect.rect().x();
-//    auto yCoord = boxRect.rect().y();
-//    auto height = boxRect.rect().height();
-//    auto width  = boxRect.rect().width();
+         std::string guid;
+         QGraphicsRectItem* boxRect;
+
+         void setFrameLen(int numOfFrames);
+         int getFrameLen() const;
+         int getFrameLenInMs() const;
+         void setNextFrameGuid(const std::string& guid);
+         const std::string& getNextFrameGuid() const;
+
+      private:
+         Box() = delete;
+         int frameLen;
+         std::string nextFrameGuid;
    };
 
    class Frame : public QObject
@@ -28,13 +36,20 @@ namespace SpriteSheet
       Q_OBJECT
 
       public:
-         Frame();
+         Frame(std::string sourceImageName);
+         Frame() = delete;
          ~Frame() = default;
 
-         void removeBox(const std::string& guid);
-         int getSize();
-
          std::map<std::string, std::unique_ptr<Box>> boxes;
+         std::string sourceImageName;
+
+         void removeBox(const std::string& guid);
+         int getSize() const;
+         const Box* const getBox(std::string guid) const;
+         void serialize();
+
+         void setImage(QPixmap pixmap);
+         const QPixmap& getImage() const;
 
       public slots:
          void addNewBox(std::string& guid, QGraphicsRectItem& boxRect);
@@ -45,27 +60,9 @@ namespace SpriteSheet
 
       private:
          int size;
-         int frameLen;
          float xOffset; // rendering offset
          float yOffset; // rendering offset
-   };
-
-   class SpriteSheetModel : public QObject
-   {
-      Q_OBJECT
-
-   public:
-      SpriteSheetModel();
-      ~SpriteSheetModel() = default;
-
-      void serialize();
-      int getSize();
-
-      void addNewFrame(Frame& frame);
-
-   private:
-      int size;
-      std::vector<Frame*> frames;
+         QPixmap image;
    };
 
 }

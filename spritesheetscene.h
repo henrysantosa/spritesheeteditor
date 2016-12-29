@@ -17,7 +17,8 @@ Q_OBJECT
 
 public:
     SpriteSheetScene(SpriteSheet::Frame& frame);
-    void loadImage(QString path);
+    void loadImage(QPixmap& pixmap);
+//    void loadImage(QString path);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 public slots:

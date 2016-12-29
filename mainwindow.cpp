@@ -1,16 +1,23 @@
 #include "mainwindow.h"
 
+const std::string imageName = "C:\\Dev\\test.png";
+
 MainWindow::MainWindow()
-    : spriteSheetModel()
-    , frame()
+    : frame(imageName)
 {
    scene = std::make_unique<SpriteSheetScene>(frame);
    graphicsView = std::make_unique<QGraphicsView>(scene.get());
-   scene->loadImage("C:\\Dev\\test.png");
+
+   auto pixMap = loadImage(imageName);
+   scene->loadImage(pixMap);
+   frame.setImage(pixMap);
 
    hitboxList = std::make_unique<BoxListWidget>(frame);
 
    boxAttributeWidget = std::make_unique<SpriteSheet::BoxAttributeWidget>(frame);
+
+   animationDrawerWidget = std::make_unique<AnimationDrawerWidget>(frame);
+   animationDrawerWidget->curFrameGuid = "0";
 
    QObject::connect(&frame, &SpriteSheet::Frame::boxAdded,
                     hitboxList.get(), &BoxListWidget::addToList);
@@ -31,11 +38,21 @@ void MainWindow::render()
    show();
    hitboxList->show();
    boxAttributeWidget->show();
+   animationDrawerWidget->show();
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent*)
 {
    hitboxList->close();
    boxAttributeWidget->close();
+   animationDrawerWidget->close();
    QMainWindow::close();
+}
+
+QPixmap MainWindow::loadImage(const std::string &path)
+{
+   QImageReader reader(tr(path.c_str()));
+   reader.setAutoTransform(true);
+   image = reader.read();
+   return QPixmap::fromImage(image);
 }

@@ -2,17 +2,53 @@
 
 using namespace SpriteSheet;
 
+const float SEC_IN_FRAME = 1/60;
+
 Box::Box(std::string guid, QGraphicsRectItem& boxRect)
    : guid(guid)
    , boxRect(&boxRect)
 {
 }
 
-Frame::Frame()
+const Box* const Frame::getBox(std::string guid) const
+{
+   auto it = boxes.find(guid);
+   if(it == boxes.end())
+      return nullptr;
+   else
+      return it->second.get();
+}
+
+void Box::setFrameLen(int numOfFrames)
+{
+   frameLen = numOfFrames;
+}
+
+int Box::getFrameLen() const
+{
+   return frameLen;
+}
+
+int Box::getFrameLenInMs() const
+{
+   return static_cast<int>(frameLen * SEC_IN_FRAME);
+}
+
+void Box::setNextFrameGuid(const std::string& guid)
+{
+   nextFrameGuid = guid;
+}
+
+const std::string& Box::getNextFrameGuid() const
+{
+   return nextFrameGuid;
+}
+
+Frame::Frame(std::string sourceImageName)
    : boxes()
    , size(0)
+   , sourceImageName(sourceImageName)
 {
-
 }
 
 void Frame::addNewBox(std::string& guid, QGraphicsRectItem& boxRect)
@@ -33,28 +69,17 @@ void Frame::removeBox(const std::string& guid)
 //   --size; // don't want to overwrite until we figure out how to get GUIDs working
 }
 
-int Frame::getSize()
+int Frame::getSize() const
 {
    return size;
 }
 
-SpriteSheetModel::SpriteSheetModel()
-   : frames()
-   , size(0)
+void Frame::setImage(QPixmap pixmap)
 {
+   image = pixmap;
 }
 
-void SpriteSheetModel::serialize()
+const QPixmap& Frame::getImage() const
 {
-   //TODO: Implement
-}
-
-void SpriteSheetModel::addNewFrame(Frame& frame)
-{
-   frames.emplace_back(&frame);
-}
-
-int SpriteSheetModel::getSize()
-{
-   return size;
+   return image;
 }

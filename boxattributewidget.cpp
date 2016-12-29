@@ -27,6 +27,14 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Frame& frame)
    boxYPosSpinBox->setRange(1.0, INT_MAX);
    boxYPosSpinBox->setSingleStep(1.0);
 
+   QLabel *frameLenLabel = new QLabel(tr("Number of frames:"));
+   boxFrameLenSpinBox = std::make_unique<QDoubleSpinBox>();
+   boxFrameLenSpinBox->setRange(1.0, INT_MAX);
+   boxFrameLenSpinBox->setSingleStep(1.0);
+
+   QLabel *nextFrameLabel = new QLabel(tr("Next frame GUID:"));
+   boxNextFrameComboBox = std::make_unique<QComboBox>();
+
    boxLayout->addWidget(widthLabel);
    boxLayout->addWidget(boxWidthSpinBox.get());
    boxLayout->addWidget(heightLabel);
@@ -35,6 +43,10 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Frame& frame)
    boxLayout->addWidget(boxXPosSpinBox.get());
    boxLayout->addWidget(yPosLabel);
    boxLayout->addWidget(boxYPosSpinBox.get());
+   boxLayout->addWidget(nextFrameLabel);
+   boxLayout->addWidget(boxNextFrameComboBox.get());
+   boxLayout->addWidget(frameLenLabel);
+   boxLayout->addWidget(boxFrameLenSpinBox.get());
    setLayout(boxLayout);
 
    // Trick to resolve overloaded signal
@@ -47,6 +59,10 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Frame& frame)
                     this, &SpriteSheet::BoxAttributeWidget::updateBoxXPos);
    QObject::connect(boxYPosSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
                     this, &SpriteSheet::BoxAttributeWidget::updateBoxYPos);
+   QObject::connect(boxNextFrameComboBox.get(), static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
+                    this, &SpriteSheet::BoxAttributeWidget::updateBoxNextFrame);
+   QObject::connect(boxFrameLenSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                    this, &SpriteSheet::BoxAttributeWidget::updateBoxFrameLen);
 
    this->setMinimumWidth(300);
    setWindowTitle(tr("Box Attributes"));
@@ -60,6 +76,19 @@ void BoxAttributeWidget::setNewBox(QListWidgetItem *item)
    boxHeightSpinBox->setValue(frame.boxes[curBoxGuid]->boxRect->rect().height());
    boxXPosSpinBox->setValue(frame.boxes[curBoxGuid]->boxRect->rect().x());
    boxYPosSpinBox->setValue(frame.boxes[curBoxGuid]->boxRect->rect().y());
+   boxFrameLenSpinBox->setValue(frame.boxes[curBoxGuid]->getFrameLen());
+
+   boxNextFrameComboBox->clear();
+   for(const auto& keyvalue : frame.boxes)
+   {
+      boxNextFrameComboBox->addItem(tr(keyvalue.first.c_str()));
+   }
+   int pos = boxNextFrameComboBox->findText(tr(frame.boxes[curBoxGuid]->getNextFrameGuid().c_str()));
+   if(pos != -1)
+   {
+      boxNextFrameComboBox->setCurrentIndex(pos);
+   }
+
 }
 
 void BoxAttributeWidget::updateBoxWidth(double width)
@@ -89,3 +118,15 @@ void BoxAttributeWidget::updateBoxYPos(double yPos)
    rect.setY(yPos);
    frame.boxes[curBoxGuid]->boxRect->setRect(rect);
 }
+
+void BoxAttributeWidget::updateBoxFrameLen(double frameLen)
+{
+   frame.boxes[curBoxGuid]->setFrameLen(frameLen);
+}
+
+void BoxAttributeWidget::updateBoxNextFrame(int entry)
+{
+   QString value = boxNextFrameComboBox->itemText(entry);
+   frame.boxes[curBoxGuid]->setNextFrameGuid(value.toStdString());
+}
+
