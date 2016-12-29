@@ -2,7 +2,7 @@
 
 using namespace SpriteSheet;
 
-const float SEC_IN_FRAME = 1/60;
+const float MS_PER_FRAME = 1000.0f/60.0f;
 
 Box::Box(std::string guid, QGraphicsRectItem& boxRect)
    : guid(guid)
@@ -31,7 +31,7 @@ int Box::getFrameLen() const
 
 int Box::getFrameLenInMs() const
 {
-   return static_cast<int>(frameLen * SEC_IN_FRAME);
+   return static_cast<int>(frameLen * MS_PER_FRAME);
 }
 
 void Box::setNextFrameGuid(const std::string& guid)
@@ -82,4 +82,10 @@ void Frame::setImage(QPixmap pixmap)
 const QPixmap& Frame::getImage() const
 {
    return image;
+}
+
+
+void Frame::serialize()
+{
+   //TODO Implement
 }

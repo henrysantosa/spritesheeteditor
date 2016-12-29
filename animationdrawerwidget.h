@@ -9,22 +9,26 @@
 
 #include "spritesheetmodel.h"
 
-class AnimationDrawerWidget : public QWidget
+namespace SpriteSheet
 {
-   Q_OBJECT
-public:
-   explicit AnimationDrawerWidget(SpriteSheet::Frame& model, QWidget *parent);
-   AnimationDrawerWidget(SpriteSheet::Frame& frame);
+   class AnimationDrawerWidget : public QWidget
+   {
+      Q_OBJECT
 
-   void paintEvent(QPaintEvent*) override;
-   std::string curFrameGuid;
+      public:
+         explicit AnimationDrawerWidget(SpriteSheet::Frame& model, QWidget *parent);
+         AnimationDrawerWidget(SpriteSheet::Frame& frame);
 
-signals:
+         void paintEvent(QPaintEvent*) override;
+         std::string curFrameGuid;
 
-public slots:
+      signals:
 
-private:
-   SpriteSheet::Frame& frame;
-};
+      public slots:
 
+      private:
+         SpriteSheet::Frame& frame;
+   };
+
+}
 #endif // ANIMATIONDRAWERWIDGET_H

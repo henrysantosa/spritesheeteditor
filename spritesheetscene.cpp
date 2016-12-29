@@ -1,5 +1,7 @@
 #include "spritesheetscene.h"
 
+using namespace SpriteSheet;
+
 SpriteSheetScene::SpriteSheetScene(SpriteSheet::Frame& frame)
    : frame(frame)
 {
@@ -39,15 +41,3 @@ void SpriteSheetScene::loadImage(QPixmap& pixmap)
 {
    this->addPixmap(pixmap);
 }
-
-//void SpriteSheetScene::loadImage(QString path)
-//{
-//   QGraphicsPixmapItem* pixmap;
-
-//   QImageReader reader(path);
-//   reader.setAutoTransform(true);
-//   const QImage newImage = reader.read();
-
-//   image = newImage;
-//   pixmap = this->addPixmap(QPixmap::fromImage(newImage));
-//}

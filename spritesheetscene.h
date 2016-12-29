@@ -11,22 +11,25 @@
 
 #include "spritesheetmodel.h"
 
-class SpriteSheetScene : public QGraphicsScene
+namespace SpriteSheet
 {
-Q_OBJECT
 
-public:
-    SpriteSheetScene(SpriteSheet::Frame& frame);
-    void loadImage(QPixmap& pixmap);
-//    void loadImage(QString path);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+   class SpriteSheetScene : public QGraphicsScene
+   {
+   Q_OBJECT
 
-public slots:
-    void removeBox(SpriteSheet::Box& box);
+   public:
+       SpriteSheetScene(SpriteSheet::Frame& frame);
+       void loadImage(QPixmap& pixmap);
+       virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
-private:
-    SpriteSheet::Frame& frame;
-    QImage image;
-};
+   public slots:
+       void removeBox(SpriteSheet::Box& box);
 
+   private:
+       SpriteSheet::Frame& frame;
+       QImage image;
+   };
+
+}
 #endif // SPRITESHEETSCENE_H

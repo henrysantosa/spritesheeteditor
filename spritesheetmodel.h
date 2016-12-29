@@ -41,11 +41,10 @@ namespace SpriteSheet
          ~Frame() = default;
 
          std::map<std::string, std::unique_ptr<Box>> boxes;
-         std::string sourceImageName;
 
+         const Box* const getBox(std::string guid) const;
          void removeBox(const std::string& guid);
          int getSize() const;
-         const Box* const getBox(std::string guid) const;
          void serialize();
 
          void setImage(QPixmap pixmap);
@@ -63,6 +62,7 @@ namespace SpriteSheet
          float xOffset; // rendering offset
          float yOffset; // rendering offset
          QPixmap image;
+         std::string sourceImageName;
    };
 
 }

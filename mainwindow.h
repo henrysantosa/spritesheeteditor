@@ -16,7 +16,6 @@ class MainWindow : public QMainWindow
 {
    Q_OBJECT
 public:
-
     MainWindow();
     ~MainWindow() = default;
 
@@ -24,11 +23,13 @@ public:
     QPixmap loadImage(const std::string& path);
 
 private:
-    std::unique_ptr<SpriteSheetScene> scene;
+    void setupSignalsAndSlots();
+
+    std::unique_ptr<SpriteSheet::SpriteSheetScene> scene;
     std::unique_ptr<QGraphicsView> graphicsView;
     std::unique_ptr<BoxListWidget> hitboxList;
     std::unique_ptr<SpriteSheet::BoxAttributeWidget> boxAttributeWidget;
-    std::unique_ptr<AnimationDrawerWidget> animationDrawerWidget;
+    std::unique_ptr<SpriteSheet::AnimationDrawerWidget> animationDrawerWidget;
 
     SpriteSheet::Frame frame; // TODO make multi frame implementation
     QImage image;
