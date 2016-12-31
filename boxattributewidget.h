@@ -26,8 +26,10 @@ namespace SpriteSheet {
    private slots:
       void updateBoxWidth(double width);
       void updateBoxHeight(double width);
-      void updateBoxXPos(double width);
-      void updateBoxYPos(double width);
+      void updateBoxXPos(double x);
+      void updateBoxYPos(double y);
+      void updateBoxXOffset(double xoffset);
+      void updateBoxYOffset(double yoffset);
       void updateBoxFrameLen(double frameLen);
       void updateBoxNextFrame(int entry);
 
@@ -37,6 +39,8 @@ namespace SpriteSheet {
       std::unique_ptr<QDoubleSpinBox> boxHeightSpinBox;
       std::unique_ptr<QDoubleSpinBox> boxXPosSpinBox;
       std::unique_ptr<QDoubleSpinBox> boxYPosSpinBox;
+      std::unique_ptr<QDoubleSpinBox> boxXOffsetSpinBox;
+      std::unique_ptr<QDoubleSpinBox> boxYOffsetSpinBox;
       std::unique_ptr<QDoubleSpinBox> boxFrameLenSpinBox;
       std::unique_ptr<QComboBox> boxNextFrameComboBox;
 

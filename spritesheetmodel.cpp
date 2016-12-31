@@ -7,6 +7,9 @@ const float MS_PER_FRAME = 1000.0f/60.0f;
 Box::Box(std::string guid, QGraphicsRectItem& boxRect)
    : guid(guid)
    , boxRect(&boxRect)
+   , xOffset(0)
+   , yOffset(0)
+   , frameLen(0)
 {
 }
 

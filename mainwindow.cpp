@@ -12,11 +12,8 @@ MainWindow::MainWindow()
    scene->loadImage(pixMap);
 
    graphicsView = std::make_unique<QGraphicsView>(scene.get());
-
    boxAttributeWidget = std::make_unique<SpriteSheet::BoxAttributeWidget>(frame);
-
    animationDrawerWidget = std::make_unique<SpriteSheet::AnimationDrawerWidget>(frame);
-   animationDrawerWidget->curFrameGuid = "0";
 
    setupSignalsAndSlots();
 

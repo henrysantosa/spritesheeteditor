@@ -25,8 +25,16 @@ void AnimationDrawerWidget::paintEvent(QPaintEvent*)
    {
       QPainter painter(this);
 
+      auto width = this->width();
+      auto height = this->height();
+
+      painter.drawLine(width/2, 0, width/2, height);
+      painter.drawLine(0, height/2, width, height/2);
+
       QPixmap curImage = frame.getImage();
-      painter.drawPixmap(0, 0, curFrame->boxRect->rect().width(), curFrame->boxRect->rect().height(),
+      painter.drawPixmap(width/2 + curFrame->xOffset,
+                         height/2 + curFrame->yOffset,
+                         curFrame->boxRect->rect().width(), curFrame->boxRect->rect().height(),
                          curImage,
                          curFrame->boxRect->rect().x(),
                          curFrame->boxRect->rect().y(),

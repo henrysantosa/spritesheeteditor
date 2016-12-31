@@ -17,6 +17,8 @@ namespace SpriteSheet
          ~Box() = default;
 
          std::string guid;
+         int xOffset;
+         int yOffset;
          QGraphicsRectItem* boxRect;
 
          void setFrameLen(int numOfFrames);
@@ -46,7 +48,6 @@ namespace SpriteSheet
          void removeBox(const std::string& guid);
          int getSize() const;
          void serialize();
-
          void setImage(QPixmap pixmap);
          const QPixmap& getImage() const;
 
@@ -59,8 +60,6 @@ namespace SpriteSheet
 
       private:
          int size;
-         float xOffset; // rendering offset
-         float yOffset; // rendering offset
          QPixmap image;
          std::string sourceImageName;
    };

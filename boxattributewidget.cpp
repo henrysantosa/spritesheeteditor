@@ -30,6 +30,16 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Frame& frame)
    boxYPosSpinBox->setRange(1.0, INT_MAX);
    boxYPosSpinBox->setSingleStep(1.0);
 
+   QLabel *xOffsetLabel = new QLabel(tr("x offset:"));
+   boxXOffsetSpinBox = std::make_unique<QDoubleSpinBox>();
+   boxYPosSpinBox->setRange(-INT_MAX/2, INT_MAX/2);
+   boxYPosSpinBox->setSingleStep(1.0);
+
+   QLabel *yOffsetLabel = new QLabel(tr("y offset:"));
+   boxYOffsetSpinBox = std::make_unique<QDoubleSpinBox>();
+   boxYPosSpinBox->setRange(-INT_MAX/2, INT_MAX/2);
+   boxYPosSpinBox->setSingleStep(1.0);
+
    QLabel *nextFrameLabel = new QLabel(tr("Next frame GUID:"));
    boxNextFrameComboBox = std::make_unique<QComboBox>();
 
@@ -48,6 +58,10 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Frame& frame)
    boxLayout->addWidget(boxXPosSpinBox.get());
    boxLayout->addWidget(yPosLabel);
    boxLayout->addWidget(boxYPosSpinBox.get());
+   boxLayout->addWidget(xOffsetLabel);
+   boxLayout->addWidget(boxXOffsetSpinBox.get());
+   boxLayout->addWidget(yOffsetLabel);
+   boxLayout->addWidget(boxYOffsetSpinBox.get());
    boxLayout->addWidget(nextFrameLabel);
    boxLayout->addWidget(boxNextFrameComboBox.get());
    boxLayout->addWidget(frameLenLabel);
@@ -66,6 +80,12 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Frame& frame)
                     this, &SpriteSheet::BoxAttributeWidget::updateBoxXPos);
    QObject::connect(boxYPosSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
                     this, &SpriteSheet::BoxAttributeWidget::updateBoxYPos);
+
+   QObject::connect(boxXOffsetSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                    this, &SpriteSheet::BoxAttributeWidget::updateBoxXOffset);
+   QObject::connect(boxYOffsetSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                    this, &SpriteSheet::BoxAttributeWidget::updateBoxYOffset);
+
    QObject::connect(boxNextFrameComboBox.get(), static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
                     this, &SpriteSheet::BoxAttributeWidget::updateBoxNextFrame);
    QObject::connect(boxFrameLenSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
@@ -82,20 +102,30 @@ void BoxAttributeWidget::addNewFrame(Box &box)
 
 void BoxAttributeWidget::setNewBox(int item)
 {
+   if(frame.boxes[curBoxGuid] != nullptr)
+   {
+      frame.boxes[curBoxGuid]->boxRect->setPen(QPen(Qt::red));
+   }
+
    curBoxGuid = boxCurFrameComboBox->itemText(item).toStdString();
 
-   boxWidthSpinBox->setValue(frame.boxes[curBoxGuid]->boxRect->rect().width());
-   boxHeightSpinBox->setValue(frame.boxes[curBoxGuid]->boxRect->rect().height());
-   boxXPosSpinBox->setValue(frame.boxes[curBoxGuid]->boxRect->rect().x());
-   boxYPosSpinBox->setValue(frame.boxes[curBoxGuid]->boxRect->rect().y());
-   boxFrameLenSpinBox->setValue(frame.boxes[curBoxGuid]->getFrameLen());
+   auto curBox = frame.boxes[curBoxGuid].get();
+   curBox->boxRect->setPen(QPen(Qt::blue));
+   boxWidthSpinBox->setValue(curBox->boxRect->rect().width());
+   boxHeightSpinBox->setValue(curBox->boxRect->rect().height());
+   boxXPosSpinBox->setValue(curBox->boxRect->rect().x());
+   boxYPosSpinBox->setValue(curBox->boxRect->rect().y());
+   boxXOffsetSpinBox->setValue(curBox->xOffset);
+   boxYOffsetSpinBox->setValue(curBox->yOffset);
+   boxFrameLenSpinBox->setValue(curBox->getFrameLen());
 
    boxNextFrameComboBox->clear();
    for(const auto& keyvalue : frame.boxes)
    {
       boxNextFrameComboBox->addItem(tr(keyvalue.first.c_str()));
    }
-   int pos = boxNextFrameComboBox->findText(tr(frame.boxes[curBoxGuid]->getNextFrameGuid().c_str()));
+
+   int pos = boxNextFrameComboBox->findText(tr(curBox->getNextFrameGuid().c_str()));
    if(pos != -1)
    {
       boxNextFrameComboBox->setCurrentIndex(pos);
@@ -129,6 +159,16 @@ void BoxAttributeWidget::updateBoxYPos(double yPos)
    auto rect = frame.boxes[curBoxGuid]->boxRect->rect();
    rect.setY(yPos);
    frame.boxes[curBoxGuid]->boxRect->setRect(rect);
+}
+
+void BoxAttributeWidget::updateBoxXOffset(double xOffset)
+{
+   frame.boxes[curBoxGuid]->xOffset = xOffset;
+}
+
+void BoxAttributeWidget::updateBoxYOffset(double yOffset)
+{
+   frame.boxes[curBoxGuid]->yOffset = yOffset;
 }
 
 void BoxAttributeWidget::updateBoxFrameLen(double frameLen)
