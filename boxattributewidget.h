@@ -20,7 +20,8 @@ namespace SpriteSheet {
       BoxAttributeWidget(SpriteSheet::Frame& frame);
 
    public slots:
-      void setNewBox(QListWidgetItem *item);
+      void setNewBox(int pos);
+      void addNewFrame(SpriteSheet::Box& box);
 
    private slots:
       void updateBoxWidth(double width);
@@ -31,6 +32,7 @@ namespace SpriteSheet {
       void updateBoxNextFrame(int entry);
 
    private:
+      std::unique_ptr<QComboBox> boxCurFrameComboBox;
       std::unique_ptr<QDoubleSpinBox> boxWidthSpinBox;
       std::unique_ptr<QDoubleSpinBox> boxHeightSpinBox;
       std::unique_ptr<QDoubleSpinBox> boxXPosSpinBox;

@@ -48,7 +48,7 @@ void AnimationDrawerWidget::paintEvent(QPaintEvent*)
    {
       QPainter painter(this);
       painter.setPen(Qt::blue);
-      painter.setFont(QFont("Arial", 30));
+      painter.setFont(QFont("Arial", 14));
       painter.drawText(rect(), Qt::AlignCenter, "Frame Not Found: Retrying in 1 second");
       QTimer::singleShot(1000, this, SLOT(update()));
    }

@@ -7,6 +7,9 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Frame& frame)
 {
    QVBoxLayout *boxLayout = new QVBoxLayout;
 
+   QLabel *curFrameLabel = new QLabel(tr("Current Frame:"));
+   boxCurFrameComboBox = std::make_unique<QComboBox>();
+
    QLabel *widthLabel = new QLabel(tr("Width:"));
    boxWidthSpinBox = std::make_unique<QDoubleSpinBox>();
    boxWidthSpinBox->setRange(1.0, INT_MAX);
@@ -27,14 +30,16 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Frame& frame)
    boxYPosSpinBox->setRange(1.0, INT_MAX);
    boxYPosSpinBox->setSingleStep(1.0);
 
+   QLabel *nextFrameLabel = new QLabel(tr("Next frame GUID:"));
+   boxNextFrameComboBox = std::make_unique<QComboBox>();
+
    QLabel *frameLenLabel = new QLabel(tr("Number of frames:"));
    boxFrameLenSpinBox = std::make_unique<QDoubleSpinBox>();
    boxFrameLenSpinBox->setRange(1.0, INT_MAX);
    boxFrameLenSpinBox->setSingleStep(1.0);
 
-   QLabel *nextFrameLabel = new QLabel(tr("Next frame GUID:"));
-   boxNextFrameComboBox = std::make_unique<QComboBox>();
-
+   boxLayout->addWidget(curFrameLabel);
+   boxLayout->addWidget(boxCurFrameComboBox.get());
    boxLayout->addWidget(widthLabel);
    boxLayout->addWidget(boxWidthSpinBox.get());
    boxLayout->addWidget(heightLabel);
@@ -51,6 +56,8 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Frame& frame)
 
    // Trick to resolve overloaded signal
    // http://stackoverflow.com/questions/16794695/connecting-overloaded-signals-and-slots-in-qt-5
+   QObject::connect(boxCurFrameComboBox.get(), static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
+                    this, &SpriteSheet::BoxAttributeWidget::setNewBox);
    QObject::connect(boxWidthSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
                     this, &SpriteSheet::BoxAttributeWidget::updateBoxWidth);
    QObject::connect(boxHeightSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
@@ -68,9 +75,14 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Frame& frame)
    setWindowTitle(tr("Box Attributes"));
 }
 
-void BoxAttributeWidget::setNewBox(QListWidgetItem *item)
+void BoxAttributeWidget::addNewFrame(Box &box)
 {
-   curBoxGuid = item->text().toStdString();
+   boxCurFrameComboBox->addItem(tr(box.guid.c_str()));
+}
+
+void BoxAttributeWidget::setNewBox(int item)
+{
+   curBoxGuid = boxCurFrameComboBox->itemText(item).toStdString();
 
    boxWidthSpinBox->setValue(frame.boxes[curBoxGuid]->boxRect->rect().width());
    boxHeightSpinBox->setValue(frame.boxes[curBoxGuid]->boxRect->rect().height());

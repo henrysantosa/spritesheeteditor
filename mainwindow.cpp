@@ -13,8 +13,6 @@ MainWindow::MainWindow()
 
    graphicsView = std::make_unique<QGraphicsView>(scene.get());
 
-   hitboxList = std::make_unique<BoxListWidget>(frame);
-
    boxAttributeWidget = std::make_unique<SpriteSheet::BoxAttributeWidget>(frame);
 
    animationDrawerWidget = std::make_unique<SpriteSheet::AnimationDrawerWidget>(frame);
@@ -29,26 +27,21 @@ MainWindow::MainWindow()
 void MainWindow::setupSignalsAndSlots()
 {
    QObject::connect(&frame, &SpriteSheet::Frame::boxAdded,
-                    hitboxList.get(), &BoxListWidget::addToList);
+                    boxAttributeWidget.get(), &SpriteSheet::BoxAttributeWidget::addNewFrame);
 
    QObject::connect(&frame, &SpriteSheet::Frame::boxRemoved,
                     scene.get(), &SpriteSheet::SpriteSheetScene::removeBox);
-
-   QObject::connect(hitboxList.get(), &BoxListWidget::itemClicked,
-                    boxAttributeWidget.get(), &SpriteSheet::BoxAttributeWidget::setNewBox);
 }
 
 void MainWindow::render()
 {
    show();
-   hitboxList->show();
    boxAttributeWidget->show();
    animationDrawerWidget->show();
 }
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
-   hitboxList->close();
    boxAttributeWidget->close();
    animationDrawerWidget->close();
    QMainWindow::close();

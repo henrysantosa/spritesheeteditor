@@ -8,7 +8,6 @@
 
 #include "spritesheetmodel.h"
 #include "spritesheetscene.h"
-#include "boxlistwidget.h"
 #include "boxattributewidget.h"
 #include "animationdrawerwidget.h"
 
@@ -27,7 +26,6 @@ private:
 
     std::unique_ptr<SpriteSheet::SpriteSheetScene> scene;
     std::unique_ptr<QGraphicsView> graphicsView;
-    std::unique_ptr<BoxListWidget> hitboxList;
     std::unique_ptr<SpriteSheet::BoxAttributeWidget> boxAttributeWidget;
     std::unique_ptr<SpriteSheet::AnimationDrawerWidget> animationDrawerWidget;
 
