@@ -17,12 +17,14 @@ SOURCES += main.cpp\
     spritesheetmodel.cpp \
     spritesheetscene.cpp \
     boxattributewidget.cpp \
-    animationdrawerwidget.cpp
+    animationdrawerwidget.cpp \
+    animationdrawerwindow.cpp
 
 HEADERS  += mainwindow.h \
     spritesheetmodel.h \
     spritesheetscene.h \
     boxattributewidget.h \
-    animationdrawerwidget.h
+    animationdrawerwidget.h \
+    animationdrawerwindow.h
 
 FORMS    += mainwindow.ui

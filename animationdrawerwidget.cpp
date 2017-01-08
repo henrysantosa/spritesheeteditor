@@ -5,16 +5,33 @@ using namespace SpriteSheet;
 AnimationDrawerWidget::AnimationDrawerWidget(SpriteSheet::Frame& model)
    : frame(model)
    , curFrameGuid("0")
+   , continueAnimation(false)
 {
-   setWindowTitle(tr("Animation Drawer"));
 }
 
-AnimationDrawerWidget::AnimationDrawerWidget(SpriteSheet::Frame& model, QWidget *parent)
-   : frame(model)
-   , QWidget(parent)
-   , curFrameGuid("0")
+void AnimationDrawerWidget::nextFrame()
 {
-   setWindowTitle(tr("Animation Drawer"));
+   const SpriteSheet::Box* curFrame = frame.getBox(curFrameGuid);
+
+   if(curFrame != nullptr)
+   {
+      auto nextGuid = curFrame->getNextFrameGuid();
+      if(frame.getBox(curFrameGuid) != nullptr)
+         curFrameGuid = nextGuid;
+   }
+}
+
+void AnimationDrawerWidget::changeCurFrameGuid(const QString &text)
+{
+   continueAnimation = false;
+   curFrameGuid = text.toStdString();
+   update();
+}
+
+void AnimationDrawerWidget::startStopAnimation()
+{
+   update();
+   continueAnimation = !continueAnimation;
 }
 
 void AnimationDrawerWidget::paintEvent(QPaintEvent*)
@@ -43,14 +60,17 @@ void AnimationDrawerWidget::paintEvent(QPaintEvent*)
 
       auto nextFrame = frame.getBox(curFrame->getNextFrameGuid());
       if( nextFrame == nullptr )
-         curFrameGuid = curFrame->guid;   // point to the same frame if no next frame
+         continueAnimation = false;
       else
          curFrameGuid = nextFrame->guid;
 
-      int waitTime = curFrame->getFrameLenInMs();
-      if(waitTime <= 0)
-         waitTime = 1000;  // default to 1 second wait time if given an invalid wait time
-      QTimer::singleShot(waitTime, this, SLOT(update()));
+      if(continueAnimation)
+      {
+         int waitTime = curFrame->getFrameLenInMs();
+         if(waitTime <= 0)
+            waitTime = 1000;  // default to 1 second wait time if given an invalid wait time
+         QTimer::singleShot(waitTime, this, SLOT(update()));
+      }
    }
    else
    {

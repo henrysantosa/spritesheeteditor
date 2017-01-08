@@ -13,7 +13,7 @@ MainWindow::MainWindow()
 
    graphicsView = std::make_unique<QGraphicsView>(scene.get());
    boxAttributeWidget = std::make_unique<SpriteSheet::BoxAttributeWidget>(frame);
-   animationDrawerWidget = std::make_unique<SpriteSheet::AnimationDrawerWidget>(frame);
+   animationDrawerWindow = std::make_unique<SpriteSheet::AnimationDrawerWindow>(frame);
 
    setupSignalsAndSlots();
 
@@ -34,13 +34,13 @@ void MainWindow::render()
 {
    show();
    boxAttributeWidget->show();
-   animationDrawerWidget->show();
+   animationDrawerWindow->show();
 }
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
    boxAttributeWidget->close();
-   animationDrawerWidget->close();
+   animationDrawerWindow->close();
    QMainWindow::close();
 }
 

@@ -10,6 +10,7 @@
 #include "spritesheetscene.h"
 #include "boxattributewidget.h"
 #include "animationdrawerwidget.h"
+#include "animationdrawerwindow.h"
 
 class MainWindow : public QMainWindow
 {
@@ -27,7 +28,7 @@ private:
     std::unique_ptr<SpriteSheet::SpriteSheetScene> scene;
     std::unique_ptr<QGraphicsView> graphicsView;
     std::unique_ptr<SpriteSheet::BoxAttributeWidget> boxAttributeWidget;
-    std::unique_ptr<SpriteSheet::AnimationDrawerWidget> animationDrawerWidget;
+    std::unique_ptr<SpriteSheet::AnimationDrawerWindow> animationDrawerWindow;
 
     SpriteSheet::Frame frame; // TODO make multi frame implementation
     QImage image;

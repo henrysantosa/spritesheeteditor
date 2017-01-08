@@ -91,7 +91,7 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Frame& frame)
    QObject::connect(boxFrameLenSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
                     this, &SpriteSheet::BoxAttributeWidget::updateBoxFrameLen);
 
-   this->setMinimumWidth(300);
+   setMinimumWidth(300);
    setWindowTitle(tr("Box Attributes"));
 }
 

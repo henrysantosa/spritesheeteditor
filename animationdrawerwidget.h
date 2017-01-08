@@ -16,7 +16,6 @@ namespace SpriteSheet
       Q_OBJECT
 
       public:
-         explicit AnimationDrawerWidget(SpriteSheet::Frame& model, QWidget *parent);
          AnimationDrawerWidget(SpriteSheet::Frame& frame);
 
          void paintEvent(QPaintEvent*) override;
@@ -25,9 +24,13 @@ namespace SpriteSheet
       signals:
 
       public slots:
+         void changeCurFrameGuid(const QString &text);
+         void nextFrame();
+         void startStopAnimation();
 
       private:
          SpriteSheet::Frame& frame;
+         bool continueAnimation;
    };
 
 }
