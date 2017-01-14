@@ -18,7 +18,7 @@ class AnimationDrawerWindow : public QWidget
 {
    Q_OBJECT
 public:
-   AnimationDrawerWindow(Frame& model);
+   AnimationDrawerWindow(Sheet& model);
 
 signals:
 
@@ -32,7 +32,7 @@ private:
    QGroupBox *animationGroup;
    QGroupBox *animationControlGroup;
 
-   void setupAnimationWidget(Frame& model);
+   void setupAnimationWidget(Sheet& model);
    void setupAnimationControlWidget();
 };
 }

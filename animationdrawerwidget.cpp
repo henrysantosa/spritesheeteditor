@@ -2,8 +2,8 @@
 
 using namespace SpriteSheet;
 
-AnimationDrawerWidget::AnimationDrawerWidget(SpriteSheet::Frame& model)
-   : frame(model)
+AnimationDrawerWidget::AnimationDrawerWidget(SpriteSheet::Sheet& model)
+   : sheet(model)
    , curFrameGuid("0")
    , continueAnimation(false)
 {
@@ -11,12 +11,12 @@ AnimationDrawerWidget::AnimationDrawerWidget(SpriteSheet::Frame& model)
 
 void AnimationDrawerWidget::nextFrame()
 {
-   const SpriteSheet::Box* curFrame = frame.getBox(curFrameGuid);
+   const SpriteSheet::Frame* curFrame = sheet.getFrame(curFrameGuid);
 
    if(curFrame != nullptr)
    {
       auto nextGuid = curFrame->getNextFrameGuid();
-      if(frame.getBox(curFrameGuid) != nullptr)
+      if(sheet.getFrame(curFrameGuid) != nullptr)
          curFrameGuid = nextGuid;
    }
 }
@@ -36,7 +36,7 @@ void AnimationDrawerWidget::startStopAnimation()
 
 void AnimationDrawerWidget::paintEvent(QPaintEvent*)
 {
-   const SpriteSheet::Box* curFrame = frame.getBox(curFrameGuid);
+   const SpriteSheet::Frame* curFrame = sheet.getFrame(curFrameGuid);
 
    if(curFrame != nullptr)
    {
@@ -48,7 +48,7 @@ void AnimationDrawerWidget::paintEvent(QPaintEvent*)
       painter.drawLine(width/2, 0, width/2, height);
       painter.drawLine(0, height/2, width, height/2);
 
-      QPixmap curImage = frame.getImage();
+      QPixmap curImage = sheet.getImage();
       painter.drawPixmap(width/2 + curFrame->xOffset,
                          height/2 + curFrame->yOffset,
                          curFrame->boxRect->rect().width(), curFrame->boxRect->rect().height(),
@@ -58,7 +58,7 @@ void AnimationDrawerWidget::paintEvent(QPaintEvent*)
                          curFrame->boxRect->rect().width(),
                          curFrame->boxRect->rect().height());
 
-      auto nextFrame = frame.getBox(curFrame->getNextFrameGuid());
+      auto nextFrame = sheet.getFrame(curFrame->getNextFrameGuid());
       if( nextFrame == nullptr )
          continueAnimation = false;
       else

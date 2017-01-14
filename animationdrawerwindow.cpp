@@ -7,7 +7,7 @@
 namespace SpriteSheet
 {
 
-AnimationDrawerWindow::AnimationDrawerWindow(Frame& model)
+AnimationDrawerWindow::AnimationDrawerWindow(Sheet& model)
 {
    setupAnimationControlWidget();
    setupAnimationWidget(model);
@@ -45,7 +45,7 @@ void AnimationDrawerWindow::setupAnimationControlWidget()
    animationControlGroup->setMaximumWidth(150);
 }
 
-void AnimationDrawerWindow::setupAnimationWidget(Frame& model)
+void AnimationDrawerWindow::setupAnimationWidget(Sheet& model)
 {
    animationGroup = new QGroupBox(tr("Animation"));
    QHBoxLayout* animationLayout = new QHBoxLayout();

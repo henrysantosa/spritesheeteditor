@@ -2,8 +2,8 @@
 
 using namespace SpriteSheet;
 
-SpriteSheetScene::SpriteSheetScene(SpriteSheet::Frame& frame)
-   : frame(frame)
+SpriteSheetScene::SpriteSheetScene(SpriteSheet::Sheet& sheet)
+   : sheet(sheet)
 {
 }
 
@@ -29,12 +29,12 @@ void SpriteSheetScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 //    rectangle->setFlag(QGraphicsItem::ItemIsSelectable);
 //    rectangle->setFlag(QGraphicsItem::ItemIsFocusable);
 
-   frame.addNewBox(std::to_string(frame.getSize()), *rectangle);
+   sheet.addNewFrame(std::to_string(sheet.getSize()), *rectangle);
 }
 
-void SpriteSheetScene::removeBox(SpriteSheet::Box &box)
+void SpriteSheetScene::removeFrame(SpriteSheet::Frame &frame)
 {
-   removeItem(box.boxRect);
+   removeItem(frame.boxRect);
 }
 
 void SpriteSheetScene::loadImage(QPixmap& pixmap)

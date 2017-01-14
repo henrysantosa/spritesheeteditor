@@ -3,17 +3,17 @@
 const std::string imageName = "C:\\Dev\\test.png";
 
 MainWindow::MainWindow()
-    : frame(imageName)
+    : sheet(imageName)
 {
    auto pixMap = loadImage(imageName);
-   frame.setImage(pixMap);
+   sheet.setImage(pixMap);
 
-   scene = std::make_unique<SpriteSheet::SpriteSheetScene>(frame);
+   scene = std::make_unique<SpriteSheet::SpriteSheetScene>(sheet);
    scene->loadImage(pixMap);
 
    graphicsView = std::make_unique<QGraphicsView>(scene.get());
-   boxAttributeWidget = std::make_unique<SpriteSheet::BoxAttributeWidget>(frame);
-   animationDrawerWindow = std::make_unique<SpriteSheet::AnimationDrawerWindow>(frame);
+   boxAttributeWidget = std::make_unique<SpriteSheet::BoxAttributeWidget>(sheet);
+   animationDrawerWindow = std::make_unique<SpriteSheet::AnimationDrawerWindow>(sheet);
 
    setupSignalsAndSlots();
 
@@ -23,11 +23,11 @@ MainWindow::MainWindow()
 
 void MainWindow::setupSignalsAndSlots()
 {
-   QObject::connect(&frame, &SpriteSheet::Frame::boxAdded,
+   QObject::connect(&sheet, &SpriteSheet::Sheet::frameAdded,
                     boxAttributeWidget.get(), &SpriteSheet::BoxAttributeWidget::addNewFrame);
 
-   QObject::connect(&frame, &SpriteSheet::Frame::boxRemoved,
-                    scene.get(), &SpriteSheet::SpriteSheetScene::removeBox);
+   QObject::connect(&sheet, &SpriteSheet::Sheet::frameRemoved,
+                    scene.get(), &SpriteSheet::SpriteSheetScene::removeFrame);
 }
 
 void MainWindow::render()

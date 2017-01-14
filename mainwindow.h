@@ -30,7 +30,7 @@ private:
     std::unique_ptr<SpriteSheet::BoxAttributeWidget> boxAttributeWidget;
     std::unique_ptr<SpriteSheet::AnimationDrawerWindow> animationDrawerWindow;
 
-    SpriteSheet::Frame frame; // TODO make multi frame implementation
+    SpriteSheet::Sheet sheet;
     QImage image;
 
 protected:

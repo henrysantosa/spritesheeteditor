@@ -2,8 +2,8 @@
 
 using namespace SpriteSheet;
 
-BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Frame& frame)
-   : frame(frame)
+BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Sheet& sheet)
+   : sheet(sheet)
 {
    QVBoxLayout *boxLayout = new QVBoxLayout;
 
@@ -71,7 +71,7 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Frame& frame)
    // Trick to resolve overloaded signal
    // http://stackoverflow.com/questions/16794695/connecting-overloaded-signals-and-slots-in-qt-5
    QObject::connect(boxCurFrameComboBox.get(), static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
-                    this, &SpriteSheet::BoxAttributeWidget::setNewBox);
+                    this, &SpriteSheet::BoxAttributeWidget::setNewFrame);
    QObject::connect(boxWidthSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
                     this, &SpriteSheet::BoxAttributeWidget::updateBoxWidth);
    QObject::connect(boxHeightSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
@@ -95,21 +95,21 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Frame& frame)
    setWindowTitle(tr("Box Attributes"));
 }
 
-void BoxAttributeWidget::addNewFrame(Box &box)
+void BoxAttributeWidget::addNewFrame(Frame &frame)
 {
-   boxCurFrameComboBox->addItem(tr(box.guid.c_str()));
+   boxCurFrameComboBox->addItem(tr(frame.guid.c_str()));
 }
 
-void BoxAttributeWidget::setNewBox(int item)
+void BoxAttributeWidget::setNewFrame(int item)
 {
-   if(frame.boxes[curBoxGuid] != nullptr)
+   if(sheet.frames[curBoxGuid] != nullptr)
    {
-      frame.boxes[curBoxGuid]->boxRect->setPen(QPen(Qt::red));
+      sheet.frames[curBoxGuid]->boxRect->setPen(QPen(Qt::red));
    }
 
    curBoxGuid = boxCurFrameComboBox->itemText(item).toStdString();
 
-   auto curBox = frame.boxes[curBoxGuid].get();
+   auto curBox = sheet.frames[curBoxGuid].get();
    curBox->boxRect->setPen(QPen(Qt::blue));
    boxWidthSpinBox->setValue(curBox->boxRect->rect().width());
    boxHeightSpinBox->setValue(curBox->boxRect->rect().height());
@@ -120,7 +120,7 @@ void BoxAttributeWidget::setNewBox(int item)
    boxFrameLenSpinBox->setValue(curBox->getFrameLen());
 
    boxNextFrameComboBox->clear();
-   for(const auto& keyvalue : frame.boxes)
+   for(const auto& keyvalue : sheet.frames)
    {
       boxNextFrameComboBox->addItem(tr(keyvalue.first.c_str()));
    }
@@ -130,55 +130,53 @@ void BoxAttributeWidget::setNewBox(int item)
    {
       boxNextFrameComboBox->setCurrentIndex(pos);
    }
-
 }
 
 void BoxAttributeWidget::updateBoxWidth(double width)
 {
-   auto rect = frame.boxes[curBoxGuid]->boxRect->rect();
+   auto rect = sheet.frames[curBoxGuid]->boxRect->rect();
    rect.setWidth(width);
-   frame.boxes[curBoxGuid]->boxRect->setRect(rect);
+   sheet.frames[curBoxGuid]->boxRect->setRect(rect);
 }
 
 void BoxAttributeWidget::updateBoxHeight(double height)
 {
-   auto rect = frame.boxes[curBoxGuid]->boxRect->rect();
+   auto rect = sheet.frames[curBoxGuid]->boxRect->rect();
    rect.setHeight(height);
-   frame.boxes[curBoxGuid]->boxRect->setRect(rect);
+   sheet.frames[curBoxGuid]->boxRect->setRect(rect);
 }
 
 void BoxAttributeWidget::updateBoxXPos(double xPos)
 {
-   auto rect = frame.boxes[curBoxGuid]->boxRect->rect();
+   auto rect = sheet.frames[curBoxGuid]->boxRect->rect();
    rect.setX(xPos);
-   frame.boxes[curBoxGuid]->boxRect->setRect(rect);
+   sheet.frames[curBoxGuid]->boxRect->setRect(rect);
 }
 
 void BoxAttributeWidget::updateBoxYPos(double yPos)
 {
-   auto rect = frame.boxes[curBoxGuid]->boxRect->rect();
+   auto rect = sheet.frames[curBoxGuid]->boxRect->rect();
    rect.setY(yPos);
-   frame.boxes[curBoxGuid]->boxRect->setRect(rect);
+   sheet.frames[curBoxGuid]->boxRect->setRect(rect);
 }
 
 void BoxAttributeWidget::updateBoxXOffset(double xOffset)
 {
-   frame.boxes[curBoxGuid]->xOffset = xOffset;
+   sheet.frames[curBoxGuid]->xOffset = xOffset;
 }
 
 void BoxAttributeWidget::updateBoxYOffset(double yOffset)
 {
-   frame.boxes[curBoxGuid]->yOffset = yOffset;
+   sheet.frames[curBoxGuid]->yOffset = yOffset;
 }
 
 void BoxAttributeWidget::updateBoxFrameLen(double frameLen)
 {
-   frame.boxes[curBoxGuid]->setFrameLen(frameLen);
+   sheet.frames[curBoxGuid]->setFrameLen(frameLen);
 }
 
 void BoxAttributeWidget::updateBoxNextFrame(int entry)
 {
    QString value = boxNextFrameComboBox->itemText(entry);
-   frame.boxes[curBoxGuid]->setNextFrameGuid(value.toStdString());
+   sheet.frames[curBoxGuid]->setNextFrameGuid(value.toStdString());
 }
-

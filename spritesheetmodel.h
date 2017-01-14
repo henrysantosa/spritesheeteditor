@@ -10,11 +10,11 @@
 
 namespace SpriteSheet
 {
-   class Box
+   class Frame
    {
       public:
-         Box(std::string guid, QGraphicsRectItem& boxRect);
-         ~Box() = default;
+         Frame(std::string guid, QGraphicsRectItem& boxRect);
+         ~Frame() = default;
 
          std::string guid;
          int xOffset;
@@ -28,35 +28,35 @@ namespace SpriteSheet
          const std::string& getNextFrameGuid() const;
 
       private:
-         Box() = delete;
+         Frame() = delete;
          int frameLen;
          std::string nextFrameGuid;
    };
 
-   class Frame : public QObject
+   class Sheet : public QObject
    {
       Q_OBJECT
 
       public:
-         Frame(std::string sourceImageName);
-         Frame() = delete;
-         ~Frame() = default;
+         Sheet(std::string sourceImageName);
+         Sheet() = delete;
+         ~Sheet() = default;
 
-         std::map<std::string, std::unique_ptr<Box>> boxes;
+         std::map<std::string, std::unique_ptr<Frame>> frames;
 
-         const Box* const getBox(std::string guid) const;
-         void removeBox(const std::string& guid);
+         const Frame* const getFrame(std::string guid) const;
+         void removeFrame(const std::string& guid);
          int getSize() const;
          void serialize();
          void setImage(QPixmap pixmap);
          const QPixmap& getImage() const;
 
       public slots:
-         void addNewBox(std::string& guid, QGraphicsRectItem& boxRect);
+         void addNewFrame(std::string& guid, QGraphicsRectItem& boxRect);
 
       signals:
-         void boxAdded(Box& box);
-         void boxRemoved(Box& box);
+         void frameAdded(Frame& frame);
+         void frameRemoved(Frame& frame);
 
       private:
          int size;

@@ -17,11 +17,11 @@ namespace SpriteSheet {
       Q_OBJECT
 
    public:
-      BoxAttributeWidget(SpriteSheet::Frame& frame);
+      BoxAttributeWidget(SpriteSheet::Sheet& sheet);
 
    public slots:
-      void setNewBox(int pos);
-      void addNewFrame(SpriteSheet::Box& box);
+      void setNewFrame(int pos);
+      void addNewFrame(SpriteSheet::Frame& box);
 
    private slots:
       void updateBoxWidth(double width);
@@ -46,7 +46,7 @@ namespace SpriteSheet {
 
       std::unique_ptr<QGroupBox> boxSpinBoxesGroup;
 
-      SpriteSheet::Frame& frame;
+      SpriteSheet::Sheet& sheet;
       std::string curBoxGuid;
    };
 }

@@ -16,7 +16,7 @@ namespace SpriteSheet
       Q_OBJECT
 
       public:
-         AnimationDrawerWidget(SpriteSheet::Frame& frame);
+         AnimationDrawerWidget(SpriteSheet::Sheet& sheet);
 
          void paintEvent(QPaintEvent*) override;
          std::string curFrameGuid;
@@ -29,7 +29,7 @@ namespace SpriteSheet
          void startStopAnimation();
 
       private:
-         SpriteSheet::Frame& frame;
+         SpriteSheet::Sheet& sheet;
          bool continueAnimation;
    };
 

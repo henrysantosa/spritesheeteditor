@@ -19,15 +19,15 @@ namespace SpriteSheet
    Q_OBJECT
 
    public:
-       SpriteSheetScene(SpriteSheet::Frame& frame);
+       SpriteSheetScene(SpriteSheet::Sheet& sheet);
        void loadImage(QPixmap& pixmap);
        virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
    public slots:
-       void removeBox(SpriteSheet::Box& box);
+       void removeFrame(SpriteSheet::Frame& frame);
 
    private:
-       SpriteSheet::Frame& frame;
+       SpriteSheet::Sheet& sheet;
        QImage image;
    };
 
