@@ -1,15 +1,17 @@
 #include "mainwindow.h"
 
-const std::string imageName = "C:\\Dev\\test.png";
+#include <exception>
+
+std::experimental::filesystem::path imagePath(R"(C:\Dev\test.png)");
+std::string serializedFile = imagePath.filename().string() + "_spritesheet";
 
 MainWindow::MainWindow()
-    : sheet(imageName)
+    : sheet(imagePath)
 {
-   auto pixMap = loadImage(imageName);
+   auto pixMap = loadImage(imagePath);
    sheet.setImage(pixMap);
 
    scene = std::make_unique<SpriteSheet::SpriteSheetScene>(sheet);
-   scene->loadImage(pixMap);
 
    graphicsView = std::make_unique<QGraphicsView>(scene.get());
    boxAttributeWidget = std::make_unique<SpriteSheet::BoxAttributeWidget>(sheet);
@@ -44,9 +46,14 @@ void MainWindow::closeEvent(QCloseEvent*)
    QMainWindow::close();
 }
 
-QPixmap MainWindow::loadImage(const std::string &path)
+QPixmap MainWindow::loadImage(const std::experimental::filesystem::path& filePath)
 {
-   QImageReader reader(tr(path.c_str()));
+   if(!std::experimental::filesystem::exists(filePath))
+   {
+      throw new std::exception("Unable to open file.");
+   }
+
+   QImageReader reader(tr(filePath.string().c_str()));
    reader.setAutoTransform(true);
    image = reader.read();
    return QPixmap::fromImage(image);

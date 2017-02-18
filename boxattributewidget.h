@@ -32,6 +32,12 @@ namespace SpriteSheet {
       void updateBoxYOffset(double yoffset);
       void updateBoxFrameLen(double frameLen);
       void updateBoxNextFrame(int entry);
+      void switchNextFrame();
+      void switchPrevFrame();
+      void saveSpriteSheet();
+
+   private:
+      void switchFrame(const Frame* oldFrame, Frame& newFrame);
 
    private:
       std::unique_ptr<QComboBox> boxCurFrameComboBox;
@@ -44,7 +50,10 @@ namespace SpriteSheet {
       std::unique_ptr<QDoubleSpinBox> boxFrameLenSpinBox;
       std::unique_ptr<QComboBox> boxNextFrameComboBox;
 
-      std::unique_ptr<QGroupBox> boxSpinBoxesGroup;
+      std::unique_ptr<QPushButton> boxNextFrameButton;
+      std::unique_ptr<QPushButton> boxPrevFrameButton;
+
+      std::unique_ptr<QPushButton> saveSpriteSheetButton;
 
       SpriteSheet::Sheet& sheet;
       std::string curBoxGuid;

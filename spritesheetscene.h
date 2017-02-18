@@ -20,7 +20,6 @@ namespace SpriteSheet
 
    public:
        SpriteSheetScene(SpriteSheet::Sheet& sheet);
-       void loadImage(QPixmap& pixmap);
        virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
    public slots:

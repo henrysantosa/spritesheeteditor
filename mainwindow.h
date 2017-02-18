@@ -12,15 +12,18 @@
 #include "animationdrawerwidget.h"
 #include "animationdrawerwindow.h"
 
+#include <experimental/filesystem>
+
 class MainWindow : public QMainWindow
 {
    Q_OBJECT
+
 public:
     MainWindow();
     ~MainWindow() = default;
 
     void render();
-    QPixmap loadImage(const std::string& path);
+    QPixmap loadImage(const std::experimental::filesystem::path& filePath);
 
 private:
     void setupSignalsAndSlots();

@@ -5,6 +5,14 @@ using namespace SpriteSheet;
 SpriteSheetScene::SpriteSheetScene(SpriteSheet::Sheet& sheet)
    : sheet(sheet)
 {
+   addPixmap(sheet.getImage());
+
+   QPen outlinePen(Qt::red);
+   for(auto it = sheet.frames.begin(); it != sheet.frames.end(); it++)
+   {
+      addRect(it->second->boxRect->rect().x(), it->second->boxRect->rect().y(),
+              it->second->boxRect->rect().width(), it->second->boxRect->rect().height(), outlinePen);
+   }
 }
 
 void SpriteSheetScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
@@ -35,9 +43,4 @@ void SpriteSheetScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 void SpriteSheetScene::removeFrame(SpriteSheet::Frame &frame)
 {
    removeItem(frame.boxRect);
-}
-
-void SpriteSheetScene::loadImage(QPixmap& pixmap)
-{
-   this->addPixmap(pixmap);
 }

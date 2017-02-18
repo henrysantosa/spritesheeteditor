@@ -7,6 +7,7 @@
 #include <QPixmap>
 
 #include <memory>
+#include <experimental/filesystem>
 
 namespace SpriteSheet
 {
@@ -38,7 +39,7 @@ namespace SpriteSheet
       Q_OBJECT
 
       public:
-         Sheet(std::string sourceImageName);
+         Sheet(std::experimental::filesystem::path sourceImageName);
          Sheet() = delete;
          ~Sheet() = default;
 
@@ -47,6 +48,7 @@ namespace SpriteSheet
          const Frame* const getFrame(std::string guid) const;
          void removeFrame(const std::string& guid);
          int getSize() const;
+         void deserialize(std::experimental::filesystem::path filePath);
          void serialize();
          void setImage(QPixmap pixmap);
          const QPixmap& getImage() const;
@@ -61,7 +63,8 @@ namespace SpriteSheet
       private:
          int size;
          QPixmap image;
-         std::string sourceImageName;
+         std::experimental::filesystem::path sourceImageName;
+         std::experimental::filesystem::path serializedFile;
    };
 
 }
