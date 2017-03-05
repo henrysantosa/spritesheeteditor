@@ -123,7 +123,7 @@ void Sheet::deserialize(std::experimental::filesystem::path filePath)
       SDLBase::Serialize::Frame curSFrame = it.second;
 
       auto curFrame = new Frame(it.first, nullptr, SerializedRectangle{curSFrame.x, curSFrame.y, curSFrame.width, curSFrame.height});
-      curFrame->setFrameLen(curSFrame.frameLenMs / MS_PER_FRAME);
+      curFrame->setFrameLen(curSFrame.frameLenMs);
       curFrame->setNextFrameGuid(curSFrame.nextFrameGuid);
       curFrame->xOffset = curSFrame.xOffset;
       curFrame->yOffset = curSFrame.yOffset;
@@ -152,7 +152,7 @@ void Sheet::serialize()
          static_cast<int>(curFrame->boxRect->rect().height()),
          curFrame->xOffset,
          curFrame->yOffset,
-         curFrame->getFrameLenInMs(),
+         curFrame->getFrameLen(),
          curFrame->guid,
          curFrame->getNextFrameGuid()
       };
