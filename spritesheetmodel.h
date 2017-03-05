@@ -11,16 +11,24 @@
 
 namespace SpriteSheet
 {
+   struct SerializedRectangle
+   {
+      int x;
+      int y;
+      int width;
+      int height;
+   };
+
    class Frame
    {
       public:
-         Frame(std::string guid, QGraphicsRectItem& boxRect);
-         ~Frame() = default;
+         Frame(std::string guid, QGraphicsRectItem* boxRect, SerializedRectangle sRect);
 
          std::string guid;
          int xOffset;
          int yOffset;
          QGraphicsRectItem* boxRect;
+         SerializedRectangle sRect;
 
          void setFrameLen(int numOfFrames);
          int getFrameLen() const;
@@ -39,10 +47,7 @@ namespace SpriteSheet
       Q_OBJECT
 
       public:
-         Sheet(std::experimental::filesystem::path sourceImageName);
-         Sheet() = delete;
-         ~Sheet() = default;
-
+         Sheet();
          std::map<std::string, std::unique_ptr<Frame>> frames;
 
          const Frame* const getFrame(std::string guid) const;
@@ -52,6 +57,7 @@ namespace SpriteSheet
          void serialize();
          void setImage(QPixmap pixmap);
          const QPixmap& getImage() const;
+         void setImagePath(std::experimental::filesystem::path sourceImageName);
 
       public slots:
          void addNewFrame(std::string& guid, QGraphicsRectItem& boxRect);

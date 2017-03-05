@@ -9,12 +9,13 @@ using namespace SpriteSheet;
 
 const float MS_PER_FRAME = 1000.0f/60.0f;
 
-Frame::Frame(std::string guid, QGraphicsRectItem& boxRect)
+Frame::Frame(std::string guid, QGraphicsRectItem* boxRect, SerializedRectangle sRect = SerializedRectangle{0,0,0,0} )
    : guid(guid)
-   , boxRect(&boxRect)
+   , boxRect(boxRect)
    , xOffset(0)
    , yOffset(0)
    , frameLen(0)
+   , sRect(sRect)
 {
 }
 
@@ -43,12 +44,16 @@ const std::string& Frame::getNextFrameGuid() const
    return nextFrameGuid;
 }
 
-Sheet::Sheet(std::experimental::filesystem::path sourceImagePath)
+Sheet::Sheet()
    : frames()
    , size(0)
-   , sourceImageName(sourceImagePath)
-   , serializedFile(sourceImagePath.filename().string() + "_spritesheet")
 {
+}
+
+void Sheet::setImagePath(std::experimental::filesystem::path sourceImagePath)
+{
+   sourceImageName = sourceImagePath;
+   serializedFile = sourceImagePath.filename().string() + "_spritesheet";
    deserialize(serializedFile);
 }
 
@@ -56,14 +61,18 @@ const Frame* const Sheet::getFrame(std::string guid) const
 {
    auto it = frames.find(guid);
    if(it == frames.end())
+   {
       return nullptr;
+   }
    else
+   {
       return it->second.get();
+   }
 }
 
 void Sheet::addNewFrame(std::string& guid, QGraphicsRectItem& boxRect)
 {
-   frames[guid] = std::make_unique<Frame>(guid, boxRect);
+   frames[guid] = std::make_unique<Frame>(guid, &boxRect);
 
    // this is how you move a rect
    //frames["0"]->boxRect->setRect(100 + size*10, 100, 100, 100);
@@ -100,9 +109,6 @@ void Sheet::deserialize(std::experimental::filesystem::path filePath)
 
    try
    {
-      if (!std::experimental::filesystem::exists(filePath))
-         return;
-
       std::ifstream ifs(filePath);
       boost::archive::text_iarchive ia(ifs);
       ia >> deserialized;
@@ -116,16 +122,14 @@ void Sheet::deserialize(std::experimental::filesystem::path filePath)
    {
       SDLBase::Serialize::Frame curSFrame = it.second;
 
-      auto rect = new QGraphicsRectItem(curSFrame.x, curSFrame.y, curSFrame.width, curSFrame.height);
-      //TODO: leaking like a mofo
-
-      auto curFrame = new Frame(it.first, *rect);
+      auto curFrame = new Frame(it.first, nullptr, SerializedRectangle{curSFrame.x, curSFrame.y, curSFrame.width, curSFrame.height});
       curFrame->setFrameLen(curSFrame.frameLenMs);
       curFrame->setNextFrameGuid(curSFrame.nextFrameGuid);
       curFrame->xOffset = curSFrame.xOffset;
       curFrame->yOffset = curSFrame.yOffset;
 
       frames[it.first] = std::unique_ptr<Frame>(curFrame);
+      ++size;
    }
 }
 

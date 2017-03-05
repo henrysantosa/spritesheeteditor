@@ -22,11 +22,13 @@ public:
     MainWindow();
     ~MainWindow() = default;
 
-    void render();
-    QPixmap loadImage(const std::experimental::filesystem::path& filePath);
+
 
 private:
     void setupSignalsAndSlots();
+    void open();
+    bool init(QString imagePath);
+    QPixmap loadImage(const std::experimental::filesystem::path& filePath);
 
     std::unique_ptr<SpriteSheet::SpriteSheetScene> scene;
     std::unique_ptr<QGraphicsView> graphicsView;

@@ -10,8 +10,10 @@ SpriteSheetScene::SpriteSheetScene(SpriteSheet::Sheet& sheet)
    QPen outlinePen(Qt::red);
    for(auto it = sheet.frames.begin(); it != sheet.frames.end(); it++)
    {
-      addRect(it->second->boxRect->rect().x(), it->second->boxRect->rect().y(),
-              it->second->boxRect->rect().width(), it->second->boxRect->rect().height(), outlinePen);
+      it->second->boxRect = addRect(it->second->sRect.x,
+                                    it->second->sRect.y,
+                                    it->second->sRect.width,
+                                    it->second->sRect.height, outlinePen);
    }
 }
 
