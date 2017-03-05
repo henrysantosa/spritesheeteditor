@@ -189,9 +189,20 @@ void BoxAttributeWidget::switchNextFrame()
 {
    auto& oldFrame = sheet.frames[curBoxGuid];
    auto& nextFrameGuid = oldFrame->getNextFrameGuid();
-   auto& newFrame = sheet.frames[nextFrameGuid];
 
-   switchFrame(oldFrame.get(), *newFrame);
+   if(nextFrameGuid.length() == 0)
+   {
+      return;
+   }
+
+   auto nextFrameIterator = sheet.frames.find(nextFrameGuid);
+   if(nextFrameIterator == sheet.frames.end())
+      return;
+   else
+   {
+      auto& frame = nextFrameIterator->second;
+      switchFrame(oldFrame.get(), *frame);
+   }
 }
 
 void BoxAttributeWidget::switchPrevFrame()

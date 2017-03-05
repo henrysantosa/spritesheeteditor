@@ -2,9 +2,6 @@
 
 #include <exception>
 
-//std::experimental::filesystem::path imagePath(R"(C:\Dev\test.png)");
-//std::string serializedFile = imagePath.filename().string() + "_spritesheet";
-
 MainWindow::MainWindow()
     : sheet()
 {
@@ -36,7 +33,7 @@ static void initializeImageFileDialog(QFileDialog &dialog, QFileDialog::AcceptMo
       mimeTypeFilters.append(mimeTypeName);
    mimeTypeFilters.sort();
    dialog.setMimeTypeFilters(mimeTypeFilters);
-   dialog.selectMimeTypeFilter("image/jpeg");
+   dialog.selectMimeTypeFilter("image/png");
    if (acceptMode == QFileDialog::AcceptSave)
       dialog.setDefaultSuffix("png");
 }
@@ -51,14 +48,15 @@ void MainWindow::open()
 
 bool MainWindow::init(QString imagePath)
 {
-   if (!std::experimental::filesystem::exists(serializedFile))
+   auto imagePathStdString = imagePath.toStdString();
+   if (!std::experimental::filesystem::exists(imagePathStdString))
    {
       return false;
    }
 
-   sheet.setImagePath(imagePath.toStdString());
+   sheet.setImagePath(imagePathStdString);
 
-   auto pixMap = loadImage(imagePath.toStdString());
+   auto pixMap = loadImage(imagePathStdString);
    sheet.setImage(pixMap);
 
    scene = std::make_unique<SpriteSheet::SpriteSheetScene>(sheet);
@@ -87,8 +85,16 @@ void MainWindow::setupSignalsAndSlots()
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
-   boxAttributeWidget->close();
-   animationDrawerWindow->close();
+   if(boxAttributeWidget != nullptr)
+   {
+      boxAttributeWidget->close();
+   }
+
+   if(animationDrawerWindow != nullptr)
+   {
+      animationDrawerWindow->close();
+   }
+
    QMainWindow::close();
 }
 
