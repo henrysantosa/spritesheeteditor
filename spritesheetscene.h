@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QImageReader>
+#include <QWheelEvent>
 
 #include <cmath>
 #include <algorithm>
@@ -21,13 +22,20 @@ namespace SpriteSheet
    public:
        SpriteSheetScene(SpriteSheet::Sheet& sheet);
        virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+       virtual void wheelEvent(QGraphicsSceneWheelEvent *event) override;
 
    public slots:
        void removeFrame(SpriteSheet::Frame& frame);
 
    private:
+       void setScale(qreal scale);
+
+   private:
        SpriteSheet::Sheet& sheet;
        QImage image;
+       QGraphicsPixmapItem* scenePixmapItem;
+
+       qreal scale;
    };
 
 }
