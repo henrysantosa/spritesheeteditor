@@ -57,7 +57,7 @@ namespace SpriteSheet
          void serialize();
          void setImage(QPixmap pixmap);
          const QPixmap& getImage() const;
-         void setImagePath(std::experimental::filesystem::path sourceImageName);
+         void setImagePath(std::experimental::filesystem::path sourceImagePath);
 
       public slots:
          void addNewFrame(std::string& guid, QGraphicsRectItem& boxRect);
@@ -69,7 +69,7 @@ namespace SpriteSheet
       private:
          int size;
          QPixmap image;
-         std::experimental::filesystem::path sourceImageName;
+         std::experimental::filesystem::path sourceImagePath;
          std::experimental::filesystem::path serializedFile;
    };
 

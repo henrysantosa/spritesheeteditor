@@ -34,10 +34,12 @@ namespace SpriteSheet {
       void updateBoxNextFrame(int entry);
       void switchNextFrame();
       void switchPrevFrame();
+      void deleteFrame();
       void saveSpriteSheet();
 
    private:
       void switchFrame(const Frame* oldFrame, Frame& newFrame);
+      void buildGuidList();
 
    private:
       std::unique_ptr<QComboBox> boxCurFrameComboBox;
@@ -53,6 +55,7 @@ namespace SpriteSheet {
       std::unique_ptr<QPushButton> boxNextFrameButton;
       std::unique_ptr<QPushButton> boxPrevFrameButton;
 
+      std::unique_ptr<QPushButton> deleteFrameButton;
       std::unique_ptr<QPushButton> saveSpriteSheetButton;
 
       SpriteSheet::Sheet& sheet;

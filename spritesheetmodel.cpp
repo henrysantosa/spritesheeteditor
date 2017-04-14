@@ -52,9 +52,9 @@ Sheet::Sheet()
 
 void Sheet::setImagePath(std::experimental::filesystem::path sourceImagePath)
 {
-   sourceImageName = sourceImagePath;
    serializedFile = sourceImagePath.filename().string() + "_spritesheet";
    deserialize(serializedFile);
+   this->sourceImagePath = sourceImagePath;
 }
 
 const Frame* const Sheet::getFrame(std::string guid) const
@@ -85,6 +85,19 @@ void Sheet::removeFrame(const std::string& guid)
 {
    emit frameRemoved(*frames[guid]);
    frames.erase(guid);
+
+   for(const auto& framePair : frames)
+   {
+      if((framePair.second.get()) != nullptr)
+      {
+         Frame frame = *(framePair.second);
+         if(frame.getNextFrameGuid() == guid)
+         {
+            frame.setNextFrameGuid("");
+         }
+      }
+   }
+
 //   --size; // don't want to overwrite until we figure out how to get GUIDs working
 }
 
@@ -136,6 +149,8 @@ void Sheet::deserialize(std::experimental::filesystem::path filePath)
 void Sheet::serialize()
 {
    SDLBase::Serialize::SpriteSheet spriteSheet;
+
+   spriteSheet.fileName = sourceImagePath.filename().string();
 
    for(auto it = frames.begin(); it != frames.end(); it++)
    {

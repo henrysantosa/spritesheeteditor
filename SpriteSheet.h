@@ -31,6 +31,7 @@ namespace SDLBase
       {
       public:
          FrameMap frameMap;
+         std::string fileName;
       };
    }
 }
@@ -43,6 +44,7 @@ namespace boost
       void serialize(Archive & ar, SDLBase::Serialize::SpriteSheet & am, const unsigned int version)
       {
          ar & am.frameMap;
+         ar & am.fileName;
       }
 
       template<class Archive>

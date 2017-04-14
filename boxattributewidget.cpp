@@ -53,6 +53,8 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Sheet& sheet)
    boxPrevFrameButton = std::make_unique<QPushButton>("Previous Frame", this);
    boxNextFrameButton = std::make_unique<QPushButton>("Next Frame", this);
 
+   deleteFrameButton = std::make_unique<QPushButton>("Delete", this);
+
    saveSpriteSheetButton = std::make_unique<QPushButton>("Save", this);
 
    boxLayout->addWidget(curFrameLabel);
@@ -75,6 +77,7 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Sheet& sheet)
    boxLayout->addWidget(boxFrameLenSpinBox.get());
    boxLayout->addWidget(boxPrevFrameButton.get());
    boxLayout->addWidget(boxNextFrameButton.get());
+   boxLayout->addWidget(deleteFrameButton.get());
    boxLayout->addWidget(saveSpriteSheetButton.get());
    setLayout(boxLayout);
 
@@ -106,6 +109,9 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Sheet& sheet)
    QObject::connect(boxNextFrameButton.get(), &QPushButton::released,
                     this, &SpriteSheet::BoxAttributeWidget::switchNextFrame);
 
+   QObject::connect(deleteFrameButton.get(), &QPushButton::released,
+                    this, &SpriteSheet::BoxAttributeWidget::deleteFrame);
+
    QObject::connect(saveSpriteSheetButton.get(), &QPushButton::released,
                     this, &SpriteSheet::BoxAttributeWidget::saveSpriteSheet);
 
@@ -114,13 +120,9 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Sheet& sheet)
 
    if(sheet.frames.begin() != sheet.frames.end())
    {
-      for(auto it = sheet.frames.begin(); it != sheet.frames.end(); it++)
-      {
-         Frame curFrame = *(it->second);
-         addNewFrame(curFrame);
-      }
+      buildGuidList();
 
-      setNewFrame(0);
+      switchFrame(nullptr, *(sheet.frames.begin()->second));
    }
 }
 
@@ -132,8 +134,27 @@ void BoxAttributeWidget::addNewFrame(Frame &frame)
 void BoxAttributeWidget::setNewFrame(int item)
 {
    auto& oldFrame = sheet.frames[curBoxGuid];
-   auto& newFrame = sheet.frames[boxCurFrameComboBox->itemText(item).toStdString()];
-   switchFrame(oldFrame.get(), *newFrame);
+
+   try
+   {
+      auto& newFrame = sheet.frames.at(boxCurFrameComboBox->itemText(item).toStdString());
+      switchFrame(oldFrame.get(), *newFrame);
+   }
+   catch(const std::out_of_range& ex)
+   {
+      buildGuidList();
+   }
+}
+
+void BoxAttributeWidget::buildGuidList()
+{
+   boxCurFrameComboBox->clear();
+
+   for(const auto& it : sheet.frames)
+   {
+      Frame curFrame = *(it.second);
+      addNewFrame(curFrame);
+   }
 }
 
 void BoxAttributeWidget::updateBoxWidth(double width)
@@ -208,6 +229,16 @@ void BoxAttributeWidget::switchNextFrame()
 void BoxAttributeWidget::switchPrevFrame()
 {
    //TODO
+}
+
+void BoxAttributeWidget::deleteFrame()
+{
+   sheet.removeFrame(curBoxGuid);
+
+   if(sheet.frames.begin() != sheet.frames.end())
+   {
+      switchFrame(nullptr, *(sheet.frames.begin()->second));
+   }
 }
 
 void BoxAttributeWidget::saveSpriteSheet()
