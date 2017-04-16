@@ -60,6 +60,7 @@ void SpriteSheetScene::wheelEvent(QGraphicsSceneWheelEvent *event)
    }
 
    setScale(scale);
+   event->accept();
 }
 
 void SpriteSheetScene::setScale(qreal scale)

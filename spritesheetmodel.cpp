@@ -19,6 +19,16 @@ Frame::Frame(std::string guid, QGraphicsRectItem* boxRect, SerializedRectangle s
 {
 }
 
+const std::string& Frame::getGuid() const
+{
+   return guid;
+}
+
+void Frame::setGuid(const std::string &guid)
+{
+   this->guid = guid;
+}
+
 void Frame::setFrameLen(int numOfFrames)
 {
    frameLen = numOfFrames;

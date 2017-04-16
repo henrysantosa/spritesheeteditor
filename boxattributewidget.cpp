@@ -8,9 +8,12 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Sheet& sheet)
    : sheet(sheet)
 {
    QVBoxLayout *boxLayout = new QVBoxLayout;
+   QHBoxLayout *hboxLayout = new QHBoxLayout;
 
    QLabel *curFrameLabel = new QLabel(tr("Current Frame:"));
    boxCurFrameComboBox = std::make_unique<QComboBox>();
+   boxCurFrameComboBox->setEditable(true);
+   boxCurFrameComboBox->setInsertPolicy(QComboBox::InsertAlphabetically);
 
    QLabel *widthLabel = new QLabel(tr("Width:"));
    boxWidthSpinBox = std::make_unique<QDoubleSpinBox>();
@@ -57,8 +60,15 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Sheet& sheet)
 
    saveSpriteSheetButton = std::make_unique<QPushButton>("Save", this);
 
+   frameGuidLineEdit = std::make_unique<QLineEdit>(this);
+   frameGuidLineEdit->setPlaceholderText("New GUID");
+   frameGuidEditButton = std::make_unique<QPushButton>("Apply", this);
+   hboxLayout->addWidget(frameGuidLineEdit.get());
+   hboxLayout->addWidget(frameGuidEditButton.get());
+
    boxLayout->addWidget(curFrameLabel);
    boxLayout->addWidget(boxCurFrameComboBox.get());
+   boxLayout->addLayout(hboxLayout);
    boxLayout->addWidget(widthLabel);
    boxLayout->addWidget(boxWidthSpinBox.get());
    boxLayout->addWidget(heightLabel);
@@ -75,6 +85,7 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Sheet& sheet)
    boxLayout->addWidget(boxNextFrameComboBox.get());
    boxLayout->addWidget(frameLenLabel);
    boxLayout->addWidget(boxFrameLenSpinBox.get());
+
    boxLayout->addWidget(boxPrevFrameButton.get());
    boxLayout->addWidget(boxNextFrameButton.get());
    boxLayout->addWidget(deleteFrameButton.get());
@@ -85,6 +96,9 @@ BoxAttributeWidget::BoxAttributeWidget(SpriteSheet::Sheet& sheet)
    // http://stackoverflow.com/questions/16794695/connecting-overloaded-signals-and-slots-in-qt-5
    QObject::connect(boxCurFrameComboBox.get(), static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
                     this, &SpriteSheet::BoxAttributeWidget::setNewFrame);
+   QObject::connect(frameGuidEditButton.get(), &QPushButton::released,
+                    this, &SpriteSheet::BoxAttributeWidget::editFrameName);
+
    QObject::connect(boxWidthSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
                     this, &SpriteSheet::BoxAttributeWidget::updateBoxWidth);
    QObject::connect(boxHeightSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
@@ -133,14 +147,14 @@ void BoxAttributeWidget::addNewFrame(Frame &frame)
 
 void BoxAttributeWidget::setNewFrame(int item)
 {
-   auto& oldFrame = sheet.frames[curBoxGuid];
+   auto& oldFrame = sheet.frames[curFrameGuid];
 
    try
    {
       auto& newFrame = sheet.frames.at(boxCurFrameComboBox->itemText(item).toStdString());
       switchFrame(oldFrame.get(), *newFrame);
    }
-   catch(const std::out_of_range& ex)
+   catch(const std::out_of_range&)
    {
       buildGuidList();
    }
@@ -159,56 +173,56 @@ void BoxAttributeWidget::buildGuidList()
 
 void BoxAttributeWidget::updateBoxWidth(double width)
 {
-   auto rect = sheet.frames[curBoxGuid]->boxRect->rect();
+   auto rect = sheet.frames[curFrameGuid]->boxRect->rect();
    rect.setWidth(width);
-   sheet.frames[curBoxGuid]->boxRect->setRect(rect);
+   sheet.frames[curFrameGuid]->boxRect->setRect(rect);
 }
 
 void BoxAttributeWidget::updateBoxHeight(double height)
 {
-   auto rect = sheet.frames[curBoxGuid]->boxRect->rect();
+   auto rect = sheet.frames[curFrameGuid]->boxRect->rect();
    rect.setHeight(height);
-   sheet.frames[curBoxGuid]->boxRect->setRect(rect);
+   sheet.frames[curFrameGuid]->boxRect->setRect(rect);
 }
 
 void BoxAttributeWidget::updateBoxXPos(double xPos)
 {
-   auto rect = sheet.frames[curBoxGuid]->boxRect->rect();
+   auto rect = sheet.frames[curFrameGuid]->boxRect->rect();
    rect.setX(xPos);
-   sheet.frames[curBoxGuid]->boxRect->setRect(rect);
+   sheet.frames[curFrameGuid]->boxRect->setRect(rect);
 }
 
 void BoxAttributeWidget::updateBoxYPos(double yPos)
 {
-   auto rect = sheet.frames[curBoxGuid]->boxRect->rect();
+   auto rect = sheet.frames[curFrameGuid]->boxRect->rect();
    rect.setY(yPos);
-   sheet.frames[curBoxGuid]->boxRect->setRect(rect);
+   sheet.frames[curFrameGuid]->boxRect->setRect(rect);
 }
 
 void BoxAttributeWidget::updateBoxXOffset(double xOffset)
 {
-   sheet.frames[curBoxGuid]->xOffset = xOffset;
+   sheet.frames[curFrameGuid]->xOffset = xOffset;
 }
 
 void BoxAttributeWidget::updateBoxYOffset(double yOffset)
 {
-   sheet.frames[curBoxGuid]->yOffset = yOffset;
+   sheet.frames[curFrameGuid]->yOffset = yOffset;
 }
 
 void BoxAttributeWidget::updateBoxFrameLen(double frameLen)
 {
-   sheet.frames[curBoxGuid]->setFrameLen(frameLen);
+   sheet.frames[curFrameGuid]->setFrameLen(frameLen);
 }
 
 void BoxAttributeWidget::updateBoxNextFrame(int entry)
 {
    QString value = boxNextFrameComboBox->itemText(entry);
-   sheet.frames[curBoxGuid]->setNextFrameGuid(value.toStdString());
+   sheet.frames[curFrameGuid]->setNextFrameGuid(value.toStdString());
 }
 
 void BoxAttributeWidget::switchNextFrame()
 {
-   auto& oldFrame = sheet.frames[curBoxGuid];
+   auto& oldFrame = sheet.frames[curFrameGuid];
    auto& nextFrameGuid = oldFrame->getNextFrameGuid();
 
    if(nextFrameGuid.length() == 0)
@@ -233,7 +247,7 @@ void BoxAttributeWidget::switchPrevFrame()
 
 void BoxAttributeWidget::deleteFrame()
 {
-   sheet.removeFrame(curBoxGuid);
+   sheet.removeFrame(curFrameGuid);
 
    if(sheet.frames.begin() != sheet.frames.end())
    {
@@ -264,7 +278,7 @@ void BoxAttributeWidget::switchFrame(const Frame* oldFrame, Frame &newFrame)
       oldFrame->boxRect->setPen(QPen(Qt::red));
    }
 
-   curBoxGuid = newFrame.guid;
+   curFrameGuid = newFrame.guid;
 
    newFrame.boxRect->setPen(QPen(Qt::blue));
    boxWidthSpinBox->setValue(newFrame.boxRect->rect().width());
@@ -274,6 +288,7 @@ void BoxAttributeWidget::switchFrame(const Frame* oldFrame, Frame &newFrame)
    boxXOffsetSpinBox->setValue(newFrame.xOffset);
    boxYOffsetSpinBox->setValue(newFrame.yOffset);
    boxFrameLenSpinBox->setValue(newFrame.getFrameLen());
+   frameGuidLineEdit->clear();
 
    boxNextFrameComboBox->clear();
    for(const auto& keyvalue : sheet.frames)
@@ -281,7 +296,7 @@ void BoxAttributeWidget::switchFrame(const Frame* oldFrame, Frame &newFrame)
       boxNextFrameComboBox->addItem(tr(keyvalue.first.c_str()));
    }
 
-   auto index = boxCurFrameComboBox->findText(tr(curBoxGuid.c_str()));
+   auto index = boxCurFrameComboBox->findText(tr(curFrameGuid.c_str()));
    if(index != -1)
    {
       boxCurFrameComboBox->setCurrentIndex(index);
@@ -291,5 +306,30 @@ void BoxAttributeWidget::switchFrame(const Frame* oldFrame, Frame &newFrame)
    if(index != -1)
    {
       boxNextFrameComboBox->setCurrentIndex(index);
+   }
+}
+
+void BoxAttributeWidget::editFrameName()
+{
+   auto newName = frameGuidLineEdit->text().toStdString();
+
+   if(!newName.empty() && newName != curFrameGuid && sheet.frames.find(curFrameGuid) != sheet.frames.end())
+   {
+      sheet.frames[newName] = std::move(sheet.frames[curFrameGuid]);
+      sheet.frames[newName]->setGuid(newName);
+      sheet.frames.erase(curFrameGuid);
+
+      for(auto& framePair: sheet.frames)
+      {
+         auto& frame = framePair.second;
+         if(frame->getNextFrameGuid() == curFrameGuid)
+         {
+            frame->setNextFrameGuid(newName);
+         }
+      }
+
+      buildGuidList();
+
+      switchFrame(nullptr, *(sheet.frames[newName]));
    }
 }

@@ -41,14 +41,14 @@ namespace boost
    namespace serialization
    {
       template<class Archive>
-      void serialize(Archive & ar, SDLBase::Serialize::SpriteSheet & am, const unsigned int version)
+      void serialize(Archive & ar, SDLBase::Serialize::SpriteSheet & am, const unsigned int)
       {
          ar & am.frameMap;
          ar & am.fileName;
       }
 
       template<class Archive>
-      void serialize(Archive & ar, SDLBase::Serialize::Frame & f, const unsigned int version)
+      void serialize(Archive & ar, SDLBase::Serialize::Frame & f, const unsigned int)
       {
          ar & f.x;
          ar & f.y;

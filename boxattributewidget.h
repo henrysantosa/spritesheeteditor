@@ -5,6 +5,7 @@
 #include <QDoubleSpinBox>
 #include <QListWidgetItem>
 #include <QGroupBox>
+#include <QLineEdit>
 
 #include "limits.h"
 
@@ -36,6 +37,7 @@ namespace SpriteSheet {
       void switchPrevFrame();
       void deleteFrame();
       void saveSpriteSheet();
+      void editFrameName();
 
    private:
       void switchFrame(const Frame* oldFrame, Frame& newFrame);
@@ -52,6 +54,9 @@ namespace SpriteSheet {
       std::unique_ptr<QDoubleSpinBox> boxFrameLenSpinBox;
       std::unique_ptr<QComboBox> boxNextFrameComboBox;
 
+      std::unique_ptr<QLineEdit> frameGuidLineEdit;
+      std::unique_ptr<QPushButton> frameGuidEditButton;
+
       std::unique_ptr<QPushButton> boxNextFrameButton;
       std::unique_ptr<QPushButton> boxPrevFrameButton;
 
@@ -59,7 +64,7 @@ namespace SpriteSheet {
       std::unique_ptr<QPushButton> saveSpriteSheetButton;
 
       SpriteSheet::Sheet& sheet;
-      std::string curBoxGuid;
+      std::string curFrameGuid;
    };
 }
 

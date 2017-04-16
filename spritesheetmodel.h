@@ -30,14 +30,15 @@ namespace SpriteSheet
          QGraphicsRectItem* boxRect;
          SerializedRectangle sRect;
 
-         void setFrameLen(int numOfFrames);
          int getFrameLen() const;
+         void setFrameLen(int numOfFrames);
          int getFrameLenInMs() const;
-         void setNextFrameGuid(const std::string& guid);
+         const std::string& getGuid() const;
+         void setGuid(const std::string& guid);
          const std::string& getNextFrameGuid() const;
+         void setNextFrameGuid(const std::string& guid);
 
       private:
-         Frame() = delete;
          int frameLen;
          std::string nextFrameGuid;
    };
@@ -55,8 +56,8 @@ namespace SpriteSheet
          int getSize() const;
          void deserialize(std::experimental::filesystem::path filePath);
          void serialize();
-         void setImage(QPixmap pixmap);
          const QPixmap& getImage() const;
+         void setImage(QPixmap pixmap);
          void setImagePath(std::experimental::filesystem::path sourceImagePath);
 
       public slots:

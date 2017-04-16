@@ -19,27 +19,25 @@ class MainWindow : public QMainWindow
    Q_OBJECT
 
 public:
-    MainWindow();
-    ~MainWindow() = default;
-
-
+   MainWindow();
+   ~MainWindow() = default;
 
 private:
-    void setupSignalsAndSlots();
-    void open();
-    bool init(QString imagePath);
-    QPixmap loadImage(const std::experimental::filesystem::path& filePath);
+   void setupSignalsAndSlots();
+   void open();
+   bool init(QString imagePath);
+   QPixmap loadImage(const std::experimental::filesystem::path& filePath);
 
-    std::unique_ptr<SpriteSheet::SpriteSheetScene> scene;
-    std::unique_ptr<QGraphicsView> graphicsView;
-    std::unique_ptr<SpriteSheet::BoxAttributeWidget> boxAttributeWidget;
-    std::unique_ptr<SpriteSheet::AnimationDrawerWindow> animationDrawerWindow;
+   std::unique_ptr<SpriteSheet::SpriteSheetScene> scene;
+   std::unique_ptr<QGraphicsView> graphicsView;
+   std::unique_ptr<SpriteSheet::BoxAttributeWidget> boxAttributeWidget;
+   std::unique_ptr<SpriteSheet::AnimationDrawerWindow> animationDrawerWindow;
 
-    SpriteSheet::Sheet sheet;
-    QImage image;
+   SpriteSheet::Sheet sheet;
+   QImage image;
 
 protected:
-    void closeEvent(QCloseEvent *event) override;
+   void closeEvent(QCloseEvent *event) override;
 };
 
 #endif // MAINWINDOW_H
