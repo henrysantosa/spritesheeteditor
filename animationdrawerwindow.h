@@ -25,6 +25,10 @@ signals:
 public slots:
 
 private:
+   void setupAnimationWidget(Sheet& model);
+   void setupAnimationControlWidget();
+
+private:
    std::unique_ptr<AnimationDrawerWidget> animationDrawerWidget;
    std::unique_ptr<QPushButton> startAnimationButton;
    std::unique_ptr<QLineEdit> animationGuidEdit;
@@ -32,8 +36,6 @@ private:
    QGroupBox *animationGroup;
    QGroupBox *animationControlGroup;
 
-   void setupAnimationWidget(Sheet& model);
-   void setupAnimationControlWidget();
 };
 }
 

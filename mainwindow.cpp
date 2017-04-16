@@ -61,7 +61,7 @@ bool MainWindow::init(QString imagePath)
 
    scene = std::make_unique<SpriteSheet::SpriteSheetScene>(sheet);
    graphicsView = std::make_unique<QGraphicsView>(scene.get());
-   boxAttributeWidget = std::make_unique<SpriteSheet::BoxAttributeWidget>(sheet);
+   boxAttributeWidget = std::make_unique<SpriteSheet::FrameAttributeWidget>(sheet);
    animationDrawerWindow = std::make_unique<SpriteSheet::AnimationDrawerWindow>(sheet);
 
    setupSignalsAndSlots();
@@ -77,7 +77,7 @@ bool MainWindow::init(QString imagePath)
 void MainWindow::setupSignalsAndSlots()
 {
    QObject::connect(&sheet, &SpriteSheet::Sheet::frameAdded,
-                    boxAttributeWidget.get(), &SpriteSheet::BoxAttributeWidget::addNewFrame);
+                    boxAttributeWidget.get(), &SpriteSheet::FrameAttributeWidget::addNewFrame);
 
    QObject::connect(&sheet, &SpriteSheet::Sheet::frameRemoved,
                     scene.get(), &SpriteSheet::SpriteSheetScene::removeFrame);

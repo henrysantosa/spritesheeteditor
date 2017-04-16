@@ -34,7 +34,6 @@ namespace SpriteSheet
        SpriteSheet::Sheet& sheet;
        QImage image;
        QGraphicsPixmapItem* scenePixmapItem;
-
        qreal scale;
    };
 

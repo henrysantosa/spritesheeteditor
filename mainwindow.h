@@ -20,7 +20,6 @@ class MainWindow : public QMainWindow
 
 public:
    MainWindow();
-   ~MainWindow() = default;
 
 private:
    void setupSignalsAndSlots();
@@ -28,9 +27,10 @@ private:
    bool init(QString imagePath);
    QPixmap loadImage(const std::experimental::filesystem::path& filePath);
 
+private:
    std::unique_ptr<SpriteSheet::SpriteSheetScene> scene;
    std::unique_ptr<QGraphicsView> graphicsView;
-   std::unique_ptr<SpriteSheet::BoxAttributeWidget> boxAttributeWidget;
+   std::unique_ptr<SpriteSheet::FrameAttributeWidget> boxAttributeWidget;
    std::unique_ptr<SpriteSheet::AnimationDrawerWindow> animationDrawerWindow;
 
    SpriteSheet::Sheet sheet;

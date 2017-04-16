@@ -107,8 +107,6 @@ void Sheet::removeFrame(const std::string& guid)
          }
       }
    }
-
-//   --size; // don't want to overwrite until we figure out how to get GUIDs working
 }
 
 int Sheet::getSize() const

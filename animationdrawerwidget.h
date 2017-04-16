@@ -17,8 +17,9 @@ namespace SpriteSheet
 
       public:
          AnimationDrawerWidget(SpriteSheet::Sheet& sheet);
-
          void paintEvent(QPaintEvent*) override;
+
+      public:
          std::string curFrameGuid;
 
       signals:
