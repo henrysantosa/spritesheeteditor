@@ -76,6 +76,9 @@ bool MainWindow::init(QString imagePath)
 
 void MainWindow::setupSignalsAndSlots()
 {
+   QObject::connect(boxAttributeWidget.get(), &SpriteSheet::FrameAttributeWidget::frameSwitched,
+                    animationDrawerWindow.get(), &SpriteSheet::AnimationDrawerWindow::switchFrame);
+
    QObject::connect(&sheet, &SpriteSheet::Sheet::frameAdded,
                     boxAttributeWidget.get(), &SpriteSheet::FrameAttributeWidget::addNewFrame);
 

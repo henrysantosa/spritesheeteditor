@@ -23,6 +23,7 @@ public:
 signals:
 
 public slots:
+   void switchFrame(std::string frameGuid);
 
 private:
    void setupAnimationWidget(Sheet& model);

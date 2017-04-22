@@ -24,6 +24,9 @@ namespace SpriteSheet {
       void setNewFrame(int pos);
       void addNewFrame(SpriteSheet::Frame& box);
 
+   signals:
+      void frameSwitched(std::string frameGuid);
+
    private slots:
       void switchNextFrame();
       void switchPrevFrame();

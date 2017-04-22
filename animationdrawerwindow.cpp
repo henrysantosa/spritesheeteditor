@@ -56,4 +56,9 @@ void AnimationDrawerWindow::setupAnimationWidget(Sheet& model)
    animationGroup->setLayout(animationLayout);
 }
 
+void AnimationDrawerWindow::switchFrame(std::string frameGuid)
+{
+   animationDrawerWidget->changeCurFrameGuid(tr(frameGuid.c_str()));
+}
+
 }

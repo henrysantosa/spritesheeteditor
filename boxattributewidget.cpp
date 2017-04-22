@@ -292,6 +292,8 @@ void FrameAttributeWidget::switchFrame(const Frame* oldFrame, Frame &newFrame)
    {
       nextFrameComboBox->setCurrentIndex(index);
    }
+
+   emit frameSwitched(curFrameGuid);
 }
 
 void FrameAttributeWidget::editFrameName()
