@@ -8,9 +8,10 @@
 
 #include "spritesheetmodel.h"
 #include "spritesheetscene.h"
-#include "boxattributewidget.h"
+#include "frameattributewidget.h"
 #include "animationdrawerwidget.h"
 #include "animationdrawerwindow.h"
+#include "framescene.h"
 
 #include <experimental/filesystem>
 
@@ -28,10 +29,12 @@ private:
    QPixmap loadImage(const std::experimental::filesystem::path& filePath);
 
 private:
-   std::unique_ptr<SpriteSheet::SpriteSheetScene> scene;
-   std::unique_ptr<QGraphicsView> graphicsView;
+   std::unique_ptr<SpriteSheet::SpriteSheetScene> sheetScene;
+   std::unique_ptr<QGraphicsView> sheetView;
    std::unique_ptr<SpriteSheet::FrameAttributeWidget> boxAttributeWidget;
    std::unique_ptr<SpriteSheet::AnimationDrawerWindow> animationDrawerWindow;
+   std::unique_ptr<SpriteSheet::FrameScene> frameScene;
+   std::unique_ptr<QGraphicsView> frameView; // TODO replace with window with the box attribute widget
 
    SpriteSheet::Sheet sheet;
    QImage image;

@@ -1,4 +1,4 @@
-#include "boxattributewidget.h"
+#include "frameattributewidget.h"
 
 #include <sstream>
 

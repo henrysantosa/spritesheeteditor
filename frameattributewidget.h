@@ -10,7 +10,7 @@
 #include "limits.h"
 
 #include "spritesheetmodel.h"
-#include "boxattributewidget.h"
+#include "frameattributewidget.h"
 
 namespace SpriteSheet {
    class FrameAttributeWidget : public QWidget

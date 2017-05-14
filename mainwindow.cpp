@@ -59,17 +59,20 @@ bool MainWindow::init(QString imagePath)
    auto pixMap = loadImage(imagePathStdString);
    sheet.setImage(pixMap);
 
-   scene = std::make_unique<SpriteSheet::SpriteSheetScene>(sheet);
-   graphicsView = std::make_unique<QGraphicsView>(scene.get());
+   sheetScene = std::make_unique<SpriteSheet::SpriteSheetScene>(sheet);
+   sheetView = std::make_unique<QGraphicsView>(sheetScene.get());
    boxAttributeWidget = std::make_unique<SpriteSheet::FrameAttributeWidget>(sheet);
    animationDrawerWindow = std::make_unique<SpriteSheet::AnimationDrawerWindow>(sheet);
+   frameScene = std::make_unique<SpriteSheet::FrameScene>(sheet, "0");
+   frameView = std::make_unique<QGraphicsView>(frameScene.get());
 
    setupSignalsAndSlots();
 
-   setCentralWidget(graphicsView.get());
+   setCentralWidget(sheetView.get());
 
    boxAttributeWidget->show();
    animationDrawerWindow->show();
+   frameView->show();
 
    return true;
 }
@@ -83,7 +86,7 @@ void MainWindow::setupSignalsAndSlots()
                     boxAttributeWidget.get(), &SpriteSheet::FrameAttributeWidget::addNewFrame);
 
    QObject::connect(&sheet, &SpriteSheet::Sheet::frameRemoved,
-                    scene.get(), &SpriteSheet::SpriteSheetScene::removeFrame);
+                    sheetScene.get(), &SpriteSheet::SpriteSheetScene::removeFrame);
 }
 
 void MainWindow::closeEvent(QCloseEvent*)
@@ -96,6 +99,11 @@ void MainWindow::closeEvent(QCloseEvent*)
    if(animationDrawerWindow != nullptr)
    {
       animationDrawerWindow->close();
+   }
+
+   if(frameView != nullptr)
+   {
+      frameView->close();
    }
 
    QMainWindow::close();

@@ -4,7 +4,7 @@ using namespace SpriteSheet;
 
 AnimationDrawerWidget::AnimationDrawerWidget(SpriteSheet::Sheet& model)
    : sheet(model)
-   , curFrameGuid("0")
+   , curFrameGuid("0")  // TODO: Make not hardcoded
    , continueAnimation(false)
 {
 }
@@ -48,7 +48,7 @@ void AnimationDrawerWidget::paintEvent(QPaintEvent*)
       painter.drawLine(width/2, 0, width/2, height);
       painter.drawLine(0, height/2, width, height/2);
 
-      QPixmap curImage = sheet.getImage();
+      const QPixmap& curImage = sheet.getImage();
       painter.drawPixmap(width/2 + curFrame->xOffset,
                          height/2 + curFrame->yOffset,
                          curFrame->boxRect->rect().width(), curFrame->boxRect->rect().height(),
