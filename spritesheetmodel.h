@@ -2,12 +2,15 @@
 #define SPRITESHEETMODEL_H
 
 #include <QObject>
-#include <QVector>
 #include <QGraphicsRectItem>
 #include <QPixmap>
 
+#include <map>
+#include <vector>
 #include <memory>
 #include <experimental/filesystem>
+
+#include "SpriteSheet.h"
 
 namespace SpriteSheet
 {
@@ -17,30 +20,34 @@ namespace SpriteSheet
       int y;
       int width;
       int height;
+
    };
 
-   class Frame
+   struct Box
    {
-      public:
-         Frame(std::string guid, QGraphicsRectItem* boxRect, SerializedRectangle sRect);
+      using BoxType = SDLBase::Serialize::Box::BoxType;
 
-         std::string guid;
-         int xOffset;
-         int yOffset;
-         QGraphicsRectItem* boxRect;
-         SerializedRectangle sRect;
+      Box(BoxType type, SerializedRectangle sRect);
 
-         int getFrameLen() const;
-         void setFrameLen(int numOfFrames);
-         int getFrameLenInMs() const;
-         const std::string& getGuid() const;
-         void setGuid(const std::string& guid);
-         const std::string& getNextFrameGuid() const;
-         void setNextFrameGuid(const std::string& guid);
+      SerializedRectangle rect;
+      BoxType type = BoxType::UNINITIALIZED;
+   };
 
-      private:
-         int frameLen;
-         std::string nextFrameGuid;
+   struct Frame
+   {
+      Frame(std::string guid, QGraphicsRectItem* boxRect, SerializedRectangle sRect);
+
+      std::string guid;
+      int xOffset;
+      int yOffset;
+      int frameLen;
+      QGraphicsRectItem* boxRect;
+      SerializedRectangle sRect;
+      std::string nextFrameGuid;
+
+      int getFrameLenInMs() const;
+
+      std::vector<std::unique_ptr<Box>> boxes;
    };
 
    class Sheet : public QObject

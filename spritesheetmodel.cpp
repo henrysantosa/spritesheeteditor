@@ -1,5 +1,4 @@
 #include "spritesheetmodel.h"
-#include "SpriteSheet.h"
 
 #include <iostream>
 #include <fstream>
@@ -8,6 +7,12 @@
 using namespace SpriteSheet;
 
 const float MS_PER_FRAME = 1000.0f/60.0f;
+
+Box::Box(BoxType type, SerializedRectangle sRect)
+   : rect(sRect)
+   , type(type)
+{
+}
 
 Frame::Frame(std::string guid, QGraphicsRectItem* boxRect, SerializedRectangle sRect = SerializedRectangle{0,0,0,0} )
    : guid(guid)
@@ -19,39 +24,9 @@ Frame::Frame(std::string guid, QGraphicsRectItem* boxRect, SerializedRectangle s
 {
 }
 
-const std::string& Frame::getGuid() const
-{
-   return guid;
-}
-
-void Frame::setGuid(const std::string &guid)
-{
-   this->guid = guid;
-}
-
-void Frame::setFrameLen(int numOfFrames)
-{
-   frameLen = numOfFrames;
-}
-
-int Frame::getFrameLen() const
-{
-   return frameLen;
-}
-
 int Frame::getFrameLenInMs() const
 {
    return static_cast<int>(frameLen * MS_PER_FRAME);
-}
-
-void Frame::setNextFrameGuid(const std::string& guid)
-{
-   nextFrameGuid = guid;
-}
-
-const std::string& Frame::getNextFrameGuid() const
-{
-   return nextFrameGuid;
 }
 
 Sheet::Sheet()
@@ -84,9 +59,6 @@ void Sheet::addNewFrame(std::string& guid, QGraphicsRectItem& boxRect)
 {
    frames[guid] = std::make_unique<Frame>(guid, &boxRect);
 
-   // this is how you move a rect
-   //frames["0"]->boxRect->setRect(100 + size*10, 100, 100, 100);
-
    ++size;
    emit frameAdded(*frames[guid]);
 }
@@ -100,10 +72,10 @@ void Sheet::removeFrame(const std::string& guid)
    {
       if((framePair.second.get()) != nullptr)
       {
-         Frame frame = *(framePair.second);
-         if(frame.getNextFrameGuid() == guid)
+         Frame& frame = *(framePair.second);
+         if(frame.nextFrameGuid == guid)
          {
-            frame.setNextFrameGuid("");
+            frame.nextFrameGuid = "";
          }
       }
    }
@@ -144,8 +116,8 @@ void Sheet::deserialize(std::experimental::filesystem::path filePath)
       SDLBase::Serialize::Frame curSFrame = it.second;
 
       auto curFrame = new Frame(it.first, nullptr, SerializedRectangle{curSFrame.x, curSFrame.y, curSFrame.width, curSFrame.height});
-      curFrame->setFrameLen(curSFrame.frameLenMs);
-      curFrame->setNextFrameGuid(curSFrame.nextFrameGuid);
+      curFrame->frameLen = curSFrame.frameLenMs;
+      curFrame->nextFrameGuid = curSFrame.nextFrameGuid;
       curFrame->xOffset = curSFrame.xOffset;
       curFrame->yOffset = curSFrame.yOffset;
 
@@ -175,9 +147,9 @@ void Sheet::serialize()
          static_cast<int>(curFrame->boxRect->rect().height()),
          curFrame->xOffset,
          curFrame->yOffset,
-         curFrame->getFrameLen(),
+         curFrame->frameLen,
          curFrame->guid,
-         curFrame->getNextFrameGuid()
+         curFrame->nextFrameGuid
       };
 
       spriteSheet.frameMap[guid] = sFrame;

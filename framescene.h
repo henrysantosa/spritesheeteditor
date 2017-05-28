@@ -16,9 +16,11 @@ class FrameScene : public QGraphicsScene
 public:
    FrameScene(SpriteSheet::Sheet& sheet, const std::string& id);
    virtual void wheelEvent(QGraphicsSceneWheelEvent *event) override;
+   virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 public slots:
     void switchFrame(const SpriteSheet::Frame& frame);
     void switchFrame(const std::string& id);
+    void switchBoxTypeMode(const Box::BoxType& boxTypeMode);
 private:
    Sheet& sheet;
    std::string curId;
@@ -26,6 +28,10 @@ private:
    float scale;
 private:
    void setScale(qreal scale);
+   Qt::GlobalColor getColor(Box::BoxType type);
+
+   Box::BoxType boxTypeMode;
+   std::vector<QGraphicsRectItem*> boxes;
 };
 
 }

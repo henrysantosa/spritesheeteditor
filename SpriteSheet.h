@@ -18,10 +18,10 @@ namespace SDLBase
          {
             HITBOX,
             HURTBOX,
-            UNINITIALZED
+            UNINITIALIZED
          };
 
-         Box() : type(UNINITIALZED) {};
+         Box() : type(UNINITIALIZED) {};
 
          int x;
          int y;
@@ -29,7 +29,7 @@ namespace SDLBase
          int yOffset;
          int width;
          int height;
-         
+
          BoxType type;
       };
 

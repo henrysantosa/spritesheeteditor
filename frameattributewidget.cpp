@@ -9,7 +9,7 @@ FrameAttributeWidget::FrameAttributeWidget(SpriteSheet::Sheet& sheet)
 {
    QLabel *curFrameLabel = new QLabel(tr("Current Frame:"));
    frameCurFrameComboBox = std::make_unique<QComboBox>();
-   frameCurFrameComboBox->setEditable(true);
+   frameCurFrameComboBox->setEditable(false);
    frameCurFrameComboBox->setInsertPolicy(QComboBox::InsertAlphabetically);
 
    QLabel *widthLabel = new QLabel(tr("Width:"));
@@ -93,7 +93,7 @@ FrameAttributeWidget::FrameAttributeWidget(SpriteSheet::Sheet& sheet)
    setLayout(boxLayout);
 
    setMinimumWidth(300);
-   setWindowTitle(tr("Box Attributes"));
+   setWindowTitle(tr("Frame Attributes"));
 
    setupSignalAndSlots();
 
@@ -118,28 +118,28 @@ void FrameAttributeWidget::setupSignalAndSlots()
 //                    this, &SpriteSheet::FrameAttributeWidget::updateFrameWidth);
    QObject::connect(frameWidthSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
                     [&](double width){
-      auto rect = sheet.frames[curFrameGuid]->boxRect->rect();
+      auto& rect = sheet.frames[curFrameGuid]->boxRect->rect();
       rect.setWidth(width);
       sheet.frames[curFrameGuid]->boxRect->setRect(rect);
    });
 
    QObject::connect(frameHeightSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
                     [&](double height){
-      auto rect = sheet.frames[curFrameGuid]->boxRect->rect();
+      auto& rect = sheet.frames[curFrameGuid]->boxRect->rect();
       rect.setHeight(height);
       sheet.frames[curFrameGuid]->boxRect->setRect(rect);
    });
 
    QObject::connect(frameXPosSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
                     [&](double xPos){
-      auto rect = sheet.frames[curFrameGuid]->boxRect->rect();
+      auto& rect = sheet.frames[curFrameGuid]->boxRect->rect();
       rect.setX(xPos);
       sheet.frames[curFrameGuid]->boxRect->setRect(rect);
    });
 
    QObject::connect(frameYPosSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
                     [&](double yPos){
-      auto rect = sheet.frames[curFrameGuid]->boxRect->rect();
+      auto& rect = sheet.frames[curFrameGuid]->boxRect->rect();
       rect.setY(yPos);
       sheet.frames[curFrameGuid]->boxRect->setRect(rect);
    });
@@ -153,11 +153,11 @@ void FrameAttributeWidget::setupSignalAndSlots()
    QObject::connect(nextFrameComboBox.get(), static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
                     [&](int entry){
       QString value = nextFrameComboBox->itemText(entry);
-      sheet.frames[curFrameGuid]->setNextFrameGuid(value.toStdString());
+      sheet.frames[curFrameGuid]->nextFrameGuid = value.toStdString();
    });
 
    QObject::connect(frameLenSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
-                    [&](double frameLen){sheet.frames[curFrameGuid]->setFrameLen(frameLen);});
+                    [&](double frameLen){sheet.frames[curFrameGuid]->frameLen = frameLen;});
 
    QObject::connect(boxPrevFrameButton.get(), &QPushButton::released,
                     this, &SpriteSheet::FrameAttributeWidget::switchPrevFrame);
@@ -198,7 +198,7 @@ void FrameAttributeWidget::buildGuidList()
 
    for(const auto& it : sheet.frames)
    {
-      Frame curFrame = *(it.second);
+      Frame& curFrame = *(it.second);
       addNewFrame(curFrame);
    }
 }
@@ -211,7 +211,7 @@ void FrameAttributeWidget::switchPrevFrame()
 void FrameAttributeWidget::switchNextFrame()
 {
    auto& oldFrame = sheet.frames[curFrameGuid];
-   auto& nextFrameGuid = oldFrame->getNextFrameGuid();
+   auto& nextFrameGuid = oldFrame->nextFrameGuid;
 
    if(nextFrameGuid.length() == 0)
    {
@@ -270,7 +270,7 @@ void FrameAttributeWidget::switchFrame(const Frame* oldFrame, Frame &newFrame)
    frameYPosSpinBox->setValue(newFrame.boxRect->rect().y());
    frameXOffsetSpinBox->setValue(newFrame.xOffset);
    frameYOffsetSpinBox->setValue(newFrame.yOffset);
-   frameLenSpinBox->setValue(newFrame.getFrameLen());
+   frameLenSpinBox->setValue(newFrame.frameLen);
    frameGuidLineEdit->clear();
 
    // resets everytime we switch frames, could be optimised
@@ -287,7 +287,7 @@ void FrameAttributeWidget::switchFrame(const Frame* oldFrame, Frame &newFrame)
       frameCurFrameComboBox->setCurrentIndex(index);
    }
 
-   index = nextFrameComboBox->findText(tr(newFrame.getNextFrameGuid().c_str()));
+   index = nextFrameComboBox->findText(tr(newFrame.nextFrameGuid.c_str()));
    if(index != -1)
    {
       nextFrameComboBox->setCurrentIndex(index);
@@ -303,15 +303,15 @@ void FrameAttributeWidget::editFrameName()
    if(!newName.empty() && newName != curFrameGuid && sheet.frames.find(curFrameGuid) != sheet.frames.end())
    {
       sheet.frames[newName] = std::move(sheet.frames[curFrameGuid]);
-      sheet.frames[newName]->setGuid(newName);
+      sheet.frames[newName]->guid = newName;
       sheet.frames.erase(curFrameGuid);
 
       for(auto& framePair: sheet.frames)
       {
          auto& frame = framePair.second;
-         if(frame->getNextFrameGuid() == curFrameGuid)
+         if(frame->nextFrameGuid == curFrameGuid)
          {
-            frame->setNextFrameGuid(newName);
+            frame->nextFrameGuid = newName;
          }
       }
 

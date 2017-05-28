@@ -61,10 +61,12 @@ bool MainWindow::init(QString imagePath)
 
    sheetScene = std::make_unique<SpriteSheet::SpriteSheetScene>(sheet);
    sheetView = std::make_unique<QGraphicsView>(sheetScene.get());
+   sheetView->setDragMode(QGraphicsView::RubberBandDrag);
+
    boxAttributeWidget = std::make_unique<SpriteSheet::FrameAttributeWidget>(sheet);
    animationDrawerWindow = std::make_unique<SpriteSheet::AnimationDrawerWindow>(sheet);
-   frameScene = std::make_unique<SpriteSheet::FrameScene>(sheet, "0");
-   frameView = std::make_unique<QGraphicsView>(frameScene.get());
+
+   frameSceneWindow = std::make_unique<SpriteSheet::FrameSceneWindow>(sheet);
 
    setupSignalsAndSlots();
 
@@ -72,7 +74,8 @@ bool MainWindow::init(QString imagePath)
 
    boxAttributeWidget->show();
    animationDrawerWindow->show();
-   frameView->show();
+
+   frameSceneWindow->show();
 
    return true;
 }
@@ -81,6 +84,9 @@ void MainWindow::setupSignalsAndSlots()
 {
    QObject::connect(boxAttributeWidget.get(), &SpriteSheet::FrameAttributeWidget::frameSwitched,
                     animationDrawerWindow.get(), &SpriteSheet::AnimationDrawerWindow::switchFrame);
+
+   QObject::connect(boxAttributeWidget.get(), &SpriteSheet::FrameAttributeWidget::frameSwitched,
+                    frameSceneWindow.get(), &SpriteSheet::FrameSceneWindow::switchFrame);
 
    QObject::connect(&sheet, &SpriteSheet::Sheet::frameAdded,
                     boxAttributeWidget.get(), &SpriteSheet::FrameAttributeWidget::addNewFrame);
@@ -101,9 +107,14 @@ void MainWindow::closeEvent(QCloseEvent*)
       animationDrawerWindow->close();
    }
 
-   if(frameView != nullptr)
+   if(frameSceneWindow != nullptr)
    {
-      frameView->close();
+      frameSceneWindow->close();
+   }
+
+   if(frameSceneAttributeWidget != nullptr)
+   {
+      frameSceneAttributeWidget->close();
    }
 
    QMainWindow::close();

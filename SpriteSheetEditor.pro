@@ -19,7 +19,9 @@ SOURCES += main.cpp\
     animationdrawerwidget.cpp \
     animationdrawerwindow.cpp \
     frameattributewidget.cpp \
-    framescene.cpp
+    framescene.cpp \
+    framesceneattributewidget.cpp \
+    framescenewindow.cpp
 
 HEADERS  += mainwindow.h \
     spritesheetmodel.h \
@@ -28,7 +30,9 @@ HEADERS  += mainwindow.h \
     animationdrawerwindow.h \
     SpriteSheet.h \
     frameattributewidget.h \
-    framescene.h
+    framescene.h \
+    framesceneattributewidget.h \
+    framescenewindow.h
 
 FORMS    += mainwindow.ui
 

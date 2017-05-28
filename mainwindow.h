@@ -6,12 +6,12 @@
 
 #include <memory>
 
+#include "animationdrawerwidget.h"
+#include "animationdrawerwindow.h"
 #include "spritesheetmodel.h"
 #include "spritesheetscene.h"
 #include "frameattributewidget.h"
-#include "animationdrawerwidget.h"
-#include "animationdrawerwindow.h"
-#include "framescene.h"
+#include "framescenewindow.h"
 
 #include <experimental/filesystem>
 
@@ -34,7 +34,8 @@ private:
    std::unique_ptr<SpriteSheet::FrameAttributeWidget> boxAttributeWidget;
    std::unique_ptr<SpriteSheet::AnimationDrawerWindow> animationDrawerWindow;
    std::unique_ptr<SpriteSheet::FrameScene> frameScene;
-   std::unique_ptr<QGraphicsView> frameView; // TODO replace with window with the box attribute widget
+   std::unique_ptr<SpriteSheet::FrameSceneAttributeWidget> frameSceneAttributeWidget;
+   std::unique_ptr<SpriteSheet::FrameSceneWindow> frameSceneWindow;
 
    SpriteSheet::Sheet sheet;
    QImage image;

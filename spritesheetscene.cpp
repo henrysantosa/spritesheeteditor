@@ -32,7 +32,7 @@ void SpriteSheetScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
    QPen outlinePen(Qt::red);
 
    if(width == 0 || height == 0)
-    return;
+      return;
 
    auto rectangle = addRect(x, y, width, height, outlinePen);
    rectangle->setScale(scale);

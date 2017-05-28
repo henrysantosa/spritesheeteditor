@@ -15,7 +15,7 @@ void AnimationDrawerWidget::nextFrame()
 
    if(curFrame != nullptr)
    {
-      auto nextGuid = curFrame->getNextFrameGuid();
+      auto nextGuid = curFrame->nextFrameGuid;
       if(sheet.getFrame(curFrameGuid) != nullptr)
          curFrameGuid = nextGuid;
    }
@@ -58,7 +58,7 @@ void AnimationDrawerWidget::paintEvent(QPaintEvent*)
                          curFrame->boxRect->rect().width(),
                          curFrame->boxRect->rect().height());
 
-      auto nextFrame = sheet.getFrame(curFrame->getNextFrameGuid());
+      auto nextFrame = sheet.getFrame(curFrame->nextFrameGuid);
       if( nextFrame == nullptr )
          continueAnimation = false;
       else
