@@ -9,10 +9,9 @@ FrameScene::FrameScene(SpriteSheet::Sheet& sheet, const std::string& id)
    : sheet(sheet)
    , curId(id)
    , scale(1.0f)
+   , boxTypeMode(Box::BoxType::HITBOX)
 {
    switchFrame(id);
-   addLine(-50, 0, 250, 0);
-   addLine(0, -50, 0, 250);
 }
 
 void FrameScene::switchFrame(const Frame &frame)
@@ -20,7 +19,6 @@ void FrameScene::switchFrame(const Frame &frame)
    const QRectF& rect = frame.boxRect->rect();
 
    clear();
-   boxes.clear();
 
    addLine(-50, 0, 250, 0);
    addLine(0, -50, 0, 250);
@@ -36,10 +34,10 @@ void FrameScene::switchFrame(const Frame &frame)
 
    for(const auto& box : frame.boxes)
    {
-      boxes.push_back(addRect(box->rect.x,
-              box->rect.y,
-              box->rect.width,
-              box->rect.height));
+      box->boxRect = addRect(box->sRect.x,
+              box->sRect.y,
+              box->sRect.width,
+              box->sRect.height);
    }
 }
 
@@ -77,12 +75,12 @@ void FrameScene::wheelEvent(QGraphicsSceneWheelEvent *event)
 void FrameScene::setScale(qreal scale)
 {
    framePixmapItem->setScale(scale);
+   const Frame& curFrame = *(sheet.frames[curId]);
 
-   for(QGraphicsRectItem* box: boxes)
+   for(const auto& box: curFrame.boxes)
    {
-      box->setScale(scale);
+      box->boxRect->setScale(scale);
    }
-   //TODO: scale boxes when we got them
 }
 
 Qt::GlobalColor FrameScene::getColor(Box::BoxType type)
@@ -111,14 +109,18 @@ void FrameScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
    if(width == 0 || height == 0)
       return;
 
-   auto rectangle = addRect(x, y, width, height, outlinePen);
-   rectangle->setScale(scale);
-
    Frame& curFrame = *(sheet.frames[curId]);
-   SerializedRectangle sRect{x, y, width, height};
-   curFrame.boxes.push_back(std::make_unique<Box>(boxTypeMode, sRect));
+   SerializedRectangle sRect{
+      static_cast<int>(x),
+      static_cast<int>(y),
+      static_cast<int>(width),
+      static_cast<int>(height)};
+   std::unique_ptr<Box> curBox = std::make_unique<Box>(boxTypeMode, sRect);
 
-   //TODO Add Box to model/sheet
+   curBox->boxRect = addRect(x, y, width, height, outlinePen);
+   curBox->boxRect->setScale(scale);
+
+   curFrame.boxes.push_back(std::move(curBox));
 
    event->accept();
 }

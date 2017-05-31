@@ -31,7 +31,6 @@ private:
    Qt::GlobalColor getColor(Box::BoxType type);
 
    Box::BoxType boxTypeMode;
-   std::vector<QGraphicsRectItem*> boxes;
 };
 
 }

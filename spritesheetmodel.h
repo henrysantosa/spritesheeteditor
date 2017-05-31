@@ -29,7 +29,8 @@ namespace SpriteSheet
 
       Box(BoxType type, SerializedRectangle sRect);
 
-      SerializedRectangle rect;
+      QGraphicsRectItem* boxRect;
+      SerializedRectangle sRect;
       BoxType type = BoxType::UNINITIALIZED;
    };
 

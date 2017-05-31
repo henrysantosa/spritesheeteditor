@@ -9,7 +9,7 @@ using namespace SpriteSheet;
 const float MS_PER_FRAME = 1000.0f/60.0f;
 
 Box::Box(BoxType type, SerializedRectangle sRect)
-   : rect(sRect)
+   : sRect(sRect)
    , type(type)
 {
 }

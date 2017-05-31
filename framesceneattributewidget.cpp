@@ -68,7 +68,7 @@ void FrameSceneAttributeWidget::setupSignalAndSlots()
 {
    QObject::connect(boxTypeBox.get(), static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
                     [&](int index){
-      emit switchBoxType((Box::BoxType)(boxTypeBox->itemData(index).convert(QVariant::Int)));
+      emit switchBoxType((Box::BoxType)(index));
    });
 
 //TODO: Implement
