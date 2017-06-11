@@ -20,6 +20,7 @@ void FrameScene::switchFrame(const Frame &frame)
 
    clear();
 
+   scale = 1.0f;
    addLine(-50, 0, 250, 0);
    addLine(0, -50, 0, 250);
 
@@ -34,10 +35,13 @@ void FrameScene::switchFrame(const Frame &frame)
 
    for(const auto& box : frame.boxes)
    {
+      QPen outlinePen(getColor(box->type));
+
       box->boxRect = addRect(box->sRect.x,
               box->sRect.y,
               box->sRect.width,
-              box->sRect.height);
+              box->sRect.height,
+              outlinePen);
    }
 }
 
@@ -47,6 +51,7 @@ void FrameScene::switchFrame(const std::string &id)
    if(selection != sheet.frames.end())
    {
       switchFrame(*(selection->second));
+      curId = selection->second->guid;
    }
 }
 
@@ -104,26 +109,20 @@ void FrameScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
    auto x = std::min(upPos.x(), downPos.x()) / scale;
    auto y = std::min(upPos.y(), downPos.y()) / scale;
 
-   QPen outlinePen(getColor(boxTypeMode));
 
    if(width == 0 || height == 0)
       return;
 
-   Frame& curFrame = *(sheet.frames[curId]);
-   SerializedRectangle sRect{
-      static_cast<int>(x),
-      static_cast<int>(y),
-      static_cast<int>(width),
-      static_cast<int>(height)};
-   std::unique_ptr<Box> curBox = std::make_unique<Box>(boxTypeMode, sRect);
+   Frame* curFrame = sheet.getFrame(curId);
 
-   curBox->boxRect = addRect(x, y, width, height, outlinePen);
-   curBox->boxRect->setScale(scale);
+   QPen outlinePen(getColor(boxTypeMode));
+   QGraphicsRectItem* boxRect = addRect(x, y, width, height, outlinePen);
+   boxRect->setScale(scale);
 
-   curFrame.boxes.push_back(std::move(curBox));
+   auto newBox = curFrame->addBox(std::to_string(curFrame->boxes.size()+1), boxTypeMode, *boxRect);
+   emit sheet.boxAdded(newBox);
 
    event->accept();
 }
-
 
 }

@@ -3,7 +3,7 @@
 namespace SpriteSheet
 {
 
-FrameSceneAttributeWidget::FrameSceneAttributeWidget(SpriteSheet::Sheet& sheet, QWidget *parent)
+FrameSceneAttributeWidget::FrameSceneAttributeWidget(SpriteSheet::Sheet& sheet, std::string curId, QWidget *parent)
    : sheet(sheet)
    , QWidget(parent)
 {
@@ -62,6 +62,8 @@ FrameSceneAttributeWidget::FrameSceneAttributeWidget(SpriteSheet::Sheet& sheet, 
    setWindowTitle(tr("Frame Attributes"));
 
    setupSignalAndSlots();
+
+   switchFrame(curId);
 }
 
 void FrameSceneAttributeWidget::setupSignalAndSlots()
@@ -71,12 +73,115 @@ void FrameSceneAttributeWidget::setupSignalAndSlots()
       emit switchBoxType((Box::BoxType)(index));
    });
 
-//TODO: Implement
+   QObject::connect(boxXPosSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                    [&](double xPos){
+      auto curFrame = sheet.getFrame(curFrameGuid);
+      if(curFrame != nullptr)
+      {
+         auto curBox = curFrame->findBox(curBoxGuid);
+         if(curBox != nullptr)
+         {
+            auto& rect = curBox->boxRect->rect();
+            rect.setX(xPos);
+            curBox->boxRect->setRect(rect);
+         }
+      }
+   });
+
+   QObject::connect(boxYPosSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                    [&](double yPos){
+      auto curFrame = sheet.getFrame(curFrameGuid);
+      if(curFrame != nullptr)
+      {
+         auto curBox = curFrame->findBox(curBoxGuid);
+         if(curBox != nullptr)
+         {
+            auto& rect = curBox->boxRect->rect();
+            rect.setY(yPos);
+            curBox->boxRect->setRect(rect);
+         }
+      }
+   });
+
+   QObject::connect(boxWidthSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                    [&](double width){
+      auto curFrame = sheet.getFrame(curFrameGuid);
+      if(curFrame != nullptr)
+      {
+         auto curBox = curFrame->findBox(curBoxGuid);
+         if(curBox != nullptr)
+         {
+            auto& rect = curBox->boxRect->rect();
+            rect.setWidth(width);
+            curBox->boxRect->setRect(rect);
+         }
+      }
+   });
+
+   QObject::connect(boxHeightSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                    [&](double height){
+      auto curFrame = sheet.getFrame(curFrameGuid);
+      if(curFrame != nullptr)
+      {
+         auto curBox = curFrame->findBox(curBoxGuid);
+         if(curBox != nullptr)
+         {
+            auto& rect = curBox->boxRect->rect();
+            rect.setHeight(height);
+            curBox->boxRect->setRect(rect);
+         }
+      }
+   });
+}
+
+void FrameSceneAttributeWidget::switchFrame(std::string& guid)
+{
+   Frame* curFrame = sheet.getFrame(guid);
+
+   if(curFrame == nullptr)
+      return;
+
+   curFrameGuid = curFrame->guid;
+
+   curBoxComboBox->clear();
+   for(const auto& box : curFrame->boxes)
+   {
+      curBoxComboBox->addItem(tr(box->guid.c_str()));
+   }
+
+   if(curFrame->boxes.size() > 0)
+   {
+      switchBox(**(curFrame->boxes.begin()));
+   }
+}
+
+void FrameSceneAttributeWidget::switchBox(std::string& guid)
+{
+   Frame* frame = sheet.getFrame(curFrameGuid);
+   if(frame != nullptr)
+   {
+      Box* curBox = frame->findBox(guid);
+      if(curBox != nullptr)
+      {
+         switchBox(*curBox);
+      }
+   }
+}
+
+void FrameSceneAttributeWidget::switchBox(Box& box)
+{
+   curBoxGuid = box.guid;
+   boxXPosSpinBox->setValue(static_cast<double>(box.sRect.x));
+   boxYPosSpinBox->setValue(static_cast<double>(box.sRect.y));
+   boxWidthSpinBox->setValue(static_cast<double>(box.sRect.width));
+   boxHeightSpinBox->setValue(static_cast<double>(box.sRect.height));
 }
 
 void FrameSceneAttributeWidget::addNewBox(Box &box)
 {
-//TODO: Implement
+   curBoxComboBox->addItem(tr(box.guid.c_str()));
+   curBoxComboBox->setCurrentIndex(curBoxComboBox->findText(tr(box.guid.c_str())));
+   switchBox(box);
 }
 
 }

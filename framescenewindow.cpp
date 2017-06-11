@@ -7,8 +7,8 @@ FrameSceneWindow::FrameSceneWindow(Sheet& sheet, QWidget *parent)
    : sheet(sheet)
    , QWidget(parent)
 {
-   frameSceneAttributeWidget = std::make_unique<FrameSceneAttributeWidget>(sheet);
    frameScene = std::make_unique<FrameScene>(sheet, "0");
+   frameSceneAttributeWidget = std::make_unique<FrameSceneAttributeWidget>(sheet, "0");
 
    frameView = std::make_unique<QGraphicsView>(frameScene.get());
    frameView->setDragMode(QGraphicsView::RubberBandDrag);
@@ -30,11 +30,15 @@ FrameSceneWindow::FrameSceneWindow(Sheet& sheet, QWidget *parent)
 
    QObject::connect(frameSceneAttributeWidget.get(), &FrameSceneAttributeWidget::switchBoxType,
                     frameScene.get(), &FrameScene::switchBoxTypeMode);
+
+   QObject::connect(&sheet, &Sheet::boxAdded,
+                    frameSceneAttributeWidget.get(), &FrameSceneAttributeWidget::addNewBox);
 }
 
 void FrameSceneWindow::switchFrame(std::string frameGuid)
 {
    frameScene->switchFrame(frameGuid);
+   frameSceneAttributeWidget->switchFrame(frameGuid);
 }
 
 }

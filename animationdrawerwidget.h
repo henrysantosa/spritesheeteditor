@@ -16,7 +16,7 @@ namespace SpriteSheet
       Q_OBJECT
 
       public:
-         AnimationDrawerWidget(SpriteSheet::Sheet& sheet);
+         AnimationDrawerWidget(SpriteSheet::Sheet& sheet, const std::string& curGuid);
          void paintEvent(QPaintEvent*) override;
 
       public:

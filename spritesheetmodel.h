@@ -21,14 +21,23 @@ namespace SpriteSheet
       int width;
       int height;
 
+      SerializedRectangle(int x, int y, int width, int height)
+         : x(x)
+         , y(y)
+         , width(width)
+         , height(height)
+      {
+      }
    };
 
    struct Box
    {
       using BoxType = SDLBase::Serialize::Box::BoxType;
 
-      Box(BoxType type, SerializedRectangle sRect);
+      Box(const std::string& guid, const BoxType& type, SerializedRectangle& sRect);
+      Box(const std::string& guid, const BoxType& type, QGraphicsRectItem& sRect);
 
+      std::string guid;
       QGraphicsRectItem* boxRect;
       SerializedRectangle sRect;
       BoxType type = BoxType::UNINITIALIZED;
@@ -46,9 +55,11 @@ namespace SpriteSheet
       SerializedRectangle sRect;
       std::string nextFrameGuid;
 
-      int getFrameLenInMs() const;
-
       std::vector<std::unique_ptr<Box>> boxes;
+
+      int getFrameLenInMs() const;
+      const Box& addBox(std::string& guid, Box::BoxType& type, QGraphicsRectItem& boxRect);
+      Box* findBox(std::string& boxGuid);
    };
 
    class Sheet : public QObject
@@ -59,7 +70,7 @@ namespace SpriteSheet
          Sheet();
          std::map<std::string, std::unique_ptr<Frame>> frames;
 
-         const Frame* const getFrame(std::string guid) const;
+         Frame* const getFrame(std::string guid) const;
          void removeFrame(const std::string& guid);
          int getSize() const;
          void deserialize(std::experimental::filesystem::path filePath);
@@ -74,6 +85,7 @@ namespace SpriteSheet
       signals:
          void frameAdded(Frame& frame);
          void frameRemoved(Frame& frame);
+         void boxAdded(Box& box);
 
       private:
          int size;

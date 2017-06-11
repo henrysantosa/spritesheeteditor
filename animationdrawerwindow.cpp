@@ -50,7 +50,13 @@ void AnimationDrawerWindow::setupAnimationWidget(Sheet& model)
    animationGroup = new QGroupBox(tr("Animation"));
    QHBoxLayout* animationLayout = new QHBoxLayout();
 
-   animationDrawerWidget = std::make_unique<AnimationDrawerWidget>(model);
+   std::string firstFrameName("");
+   if(model.frames.size() > 0)
+   {
+      firstFrameName = (model.frames.begin())->second->guid;
+   }
+
+   animationDrawerWidget = std::make_unique<AnimationDrawerWidget>(model, firstFrameName);
 
    animationLayout->addWidget(animationDrawerWidget.get());
    animationGroup->setLayout(animationLayout);

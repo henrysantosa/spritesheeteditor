@@ -8,9 +8,18 @@ using namespace SpriteSheet;
 
 const float MS_PER_FRAME = 1000.0f/60.0f;
 
-Box::Box(BoxType type, SerializedRectangle sRect)
-   : sRect(sRect)
+Box::Box(const std::string& guid, const BoxType& type, SerializedRectangle& sRect)
+   : guid(guid)
+   , sRect(sRect)
    , type(type)
+{
+}
+
+Box::Box(const std::string& guid, const BoxType& type, QGraphicsRectItem& boxRect)
+   : guid(guid)
+   , sRect(boxRect.rect().x(), boxRect.rect().y(), boxRect.rect().width(), boxRect.rect().height())
+   , type(type)
+   , boxRect(&boxRect)
 {
 }
 
@@ -22,6 +31,27 @@ Frame::Frame(std::string guid, QGraphicsRectItem* boxRect, SerializedRectangle s
    , frameLen(0)
    , sRect(sRect)
 {
+}
+
+const Box& Frame::addBox(std::string& guid, Box::BoxType& type, QGraphicsRectItem& boxRect)
+{
+   std::unique_ptr<Box> curBox = std::make_unique<Box>(guid, type, boxRect);
+   boxes.push_back(std::move(curBox));
+   return (*boxes.back());
+}
+
+Box* Frame::findBox(std::string& boxGuid)
+{
+   auto boxIt = std::find_if(boxes.begin(), boxes.end(), [&boxGuid](const auto& box){ return box->guid == boxGuid; });
+
+   if(boxIt == boxes.end())
+   {
+      return nullptr;
+   }
+   else
+   {
+      return boxIt->get();
+   }
 }
 
 int Frame::getFrameLenInMs() const
@@ -42,7 +72,7 @@ void Sheet::setImagePath(std::experimental::filesystem::path sourceImagePath)
    this->sourceImagePath = sourceImagePath;
 }
 
-const Frame* const Sheet::getFrame(std::string guid) const
+Frame* const Sheet::getFrame(std::string guid) const
 {
    auto it = frames.find(guid);
    if(it == frames.end())
@@ -121,6 +151,20 @@ void Sheet::deserialize(std::experimental::filesystem::path filePath)
       curFrame->xOffset = curSFrame.xOffset;
       curFrame->yOffset = curSFrame.yOffset;
 
+      int i = 0;
+      for(const auto& sBox : curSFrame.boxes)
+      {
+         SerializedRectangle sRect {
+            sBox.x,
+            sBox.y,
+            sBox.width,
+            sBox.height
+         };
+         auto curBox = new Box(std::to_string(i), sBox.type, sRect);
+         curFrame->boxes.push_back(std::unique_ptr<Box>(curBox));
+         i++;
+      }
+
       frames[it.first] = std::unique_ptr<Frame>(curFrame);
       ++size;
    }
@@ -151,6 +195,17 @@ void Sheet::serialize()
          curFrame->guid,
          curFrame->nextFrameGuid
       };
+
+      for(const auto& box : curFrame->boxes)
+      {
+         SDLBase::Serialize::Box sBox;
+         sBox.type = box->type;
+         sBox.x = box->sRect.x;
+         sBox.y = box->sRect.y;
+         sBox.width = box->sRect.width;
+         sBox.height = box->sRect.height;
+         sFrame.boxes.push_back(sBox);
+      }
 
       spriteSheet.frameMap[guid] = sFrame;
    }

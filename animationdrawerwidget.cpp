@@ -2,9 +2,9 @@
 
 using namespace SpriteSheet;
 
-AnimationDrawerWidget::AnimationDrawerWidget(SpriteSheet::Sheet& model)
+AnimationDrawerWidget::AnimationDrawerWidget(SpriteSheet::Sheet& model, const std::string& curGuid)
    : sheet(model)
-   , curFrameGuid("0")  // TODO: Make not hardcoded
+   , curFrameGuid(curGuid)  // TODO: Make not hardcoded
    , continueAnimation(false)
 {
 }

@@ -16,10 +16,12 @@ class FrameSceneAttributeWidget : public QWidget
 {
    Q_OBJECT
 public:
-   explicit FrameSceneAttributeWidget(SpriteSheet::Sheet& sheet, QWidget *parent = 0);
+   explicit FrameSceneAttributeWidget(SpriteSheet::Sheet& sheet, std::string curId, QWidget *parent = 0);
 
 private:
    SpriteSheet::Sheet& sheet;
+   std::string curFrameGuid;
+   std::string curBoxGuid;
 
    std::unique_ptr<QComboBox> curBoxComboBox;
    std::unique_ptr<QDoubleSpinBox> boxWidthSpinBox;
@@ -30,12 +32,15 @@ private:
 
 private:
    void setupSignalAndSlots();
+   void switchBox(Box& box);
 
 signals:
    void switchBoxType(Box::BoxType type);
 
 public slots:
-   void addNewBox(SpriteSheet::Box& box);
+   void switchFrame(std::string& guid);
+   void switchBox(std::string& guid);
+   void addNewBox(Box& box);
 };
 
 }
