@@ -7,7 +7,7 @@ namespace SpriteSheet
 
 FrameScene::FrameScene(SpriteSheet::Sheet& sheet, const std::string& id)
    : sheet(sheet)
-   , curId(id)
+   , curFrameGuid(id)
    , scale(1.0f)
    , boxTypeMode(Box::BoxType::HITBOX)
 {
@@ -51,8 +51,13 @@ void FrameScene::switchFrame(const std::string &id)
    if(selection != sheet.frames.end())
    {
       switchFrame(*(selection->second));
-      curId = selection->second->guid;
+      curFrameGuid = selection->second->guid;
    }
+}
+
+void FrameScene::redrawFrame()
+{
+   FrameScene::switchFrame(curFrameGuid);
 }
 
 void FrameScene::switchBoxTypeMode(const Box::BoxType &boxTypeMode)
@@ -80,7 +85,7 @@ void FrameScene::wheelEvent(QGraphicsSceneWheelEvent *event)
 void FrameScene::setScale(qreal scale)
 {
    framePixmapItem->setScale(scale);
-   const Frame& curFrame = *(sheet.frames[curId]);
+   const Frame& curFrame = *(sheet.frames[curFrameGuid]);
 
    for(const auto& box: curFrame.boxes)
    {
@@ -113,7 +118,7 @@ void FrameScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
    if(width == 0 || height == 0)
       return;
 
-   Frame* curFrame = sheet.getFrame(curId);
+   Frame* curFrame = sheet.getFrame(curFrameGuid);
 
    QPen outlinePen(getColor(boxTypeMode));
    QGraphicsRectItem* boxRect = addRect(x, y, width, height, outlinePen);

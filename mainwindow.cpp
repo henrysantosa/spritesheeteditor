@@ -74,7 +74,6 @@ bool MainWindow::init(QString imagePath)
 
    boxAttributeWidget->show();
    animationDrawerWindow->show();
-
    frameSceneWindow->show();
 
    return true;

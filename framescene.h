@@ -21,9 +21,10 @@ public slots:
     void switchFrame(const SpriteSheet::Frame& frame);
     void switchFrame(const std::string& id);
     void switchBoxTypeMode(const Box::BoxType& boxTypeMode);
+    void redrawFrame();
 private:
    Sheet& sheet;
-   std::string curId;
+   std::string curFrameGuid;
    QGraphicsPixmapItem* framePixmapItem;
    float scale;
 private:

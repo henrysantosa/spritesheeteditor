@@ -33,6 +33,9 @@ FrameSceneWindow::FrameSceneWindow(Sheet& sheet, QWidget *parent)
 
    QObject::connect(&sheet, &Sheet::boxAdded,
                     frameSceneAttributeWidget.get(), &FrameSceneAttributeWidget::addNewBox);
+
+   QObject::connect(frameSceneAttributeWidget.get(), &FrameSceneAttributeWidget::boxDeleted,
+                    frameScene.get(), &FrameScene::redrawFrame);
 }
 
 void FrameSceneWindow::switchFrame(std::string frameGuid)

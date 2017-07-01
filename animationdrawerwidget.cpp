@@ -4,7 +4,7 @@ using namespace SpriteSheet;
 
 AnimationDrawerWidget::AnimationDrawerWidget(SpriteSheet::Sheet& model, const std::string& curGuid)
    : sheet(model)
-   , curFrameGuid(curGuid)  // TODO: Make not hardcoded
+   , curFrameGuid(curGuid)
    , continueAnimation(false)
 {
 }

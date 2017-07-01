@@ -39,6 +39,8 @@ FrameSceneAttributeWidget::FrameSceneAttributeWidget(SpriteSheet::Sheet& sheet, 
    boxTypeBox->addItem("Hurtbox", Box::BoxType::HURTBOX);
    boxTypeBox->setInsertPolicy(QComboBox::InsertAlphabetically);
 
+   deleteBoxButton = std::make_unique<QPushButton>("Delete", this);
+
    QVBoxLayout *boxLayout = new QVBoxLayout;
    QHBoxLayout *hboxLayout = new QHBoxLayout;
 
@@ -55,6 +57,7 @@ FrameSceneAttributeWidget::FrameSceneAttributeWidget(SpriteSheet::Sheet& sheet, 
    boxLayout->addWidget(boxYPosSpinBox.get());
    boxLayout->addWidget(boxTypeLabel);
    boxLayout->addWidget(boxTypeBox.get());
+   boxLayout->addWidget(deleteBoxButton.get());
 
    setLayout(boxLayout);
 
@@ -68,6 +71,19 @@ FrameSceneAttributeWidget::FrameSceneAttributeWidget(SpriteSheet::Sheet& sheet, 
 
 void FrameSceneAttributeWidget::setupSignalAndSlots()
 {
+   QObject::connect(curBoxComboBox.get(), static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
+                    this, [this](int index){
+      auto curFrame = sheet.getFrame(curFrameGuid);
+      if(curFrame != nullptr)
+      {
+         auto curBox = curFrame->findBox(curBoxComboBox->itemText(index).toStdString());
+         if(curBox != nullptr)
+         {
+            switchBox(*curBox);
+         }
+      }
+   });
+
    QObject::connect(boxTypeBox.get(), static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
                     [&](int index){
       emit switchBoxType((Box::BoxType)(index));
@@ -132,6 +148,9 @@ void FrameSceneAttributeWidget::setupSignalAndSlots()
          }
       }
    });
+
+   QObject::connect(deleteBoxButton.get(), &QPushButton::released,
+                    this, &FrameSceneAttributeWidget::deleteBox);
 }
 
 void FrameSceneAttributeWidget::switchFrame(std::string& guid)
@@ -175,6 +194,22 @@ void FrameSceneAttributeWidget::switchBox(Box& box)
    boxYPosSpinBox->setValue(static_cast<double>(box.sRect.y));
    boxWidthSpinBox->setValue(static_cast<double>(box.sRect.width));
    boxHeightSpinBox->setValue(static_cast<double>(box.sRect.height));
+   boxTypeBox->setCurrentIndex(boxTypeBox->findData(box.type));
+}
+
+void FrameSceneAttributeWidget::deleteBox()
+{
+   Frame* curFrame = sheet.getFrame(curFrameGuid);
+   if(curFrame != nullptr)
+   {
+      curFrame->boxes.erase(std::remove_if(curFrame->boxes.begin(), curFrame->boxes.end(), [this](const auto& box){
+         return box->guid == curBoxGuid;
+      }), curFrame->boxes.end());
+
+      emit boxDeleted();
+
+      switchFrame(curFrameGuid);
+   }
 }
 
 void FrameSceneAttributeWidget::addNewBox(Box &box)

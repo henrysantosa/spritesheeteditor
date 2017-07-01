@@ -29,6 +29,7 @@ private:
    std::unique_ptr<QDoubleSpinBox> boxXPosSpinBox;
    std::unique_ptr<QDoubleSpinBox> boxYPosSpinBox;
    std::unique_ptr<QComboBox> boxTypeBox;
+   std::unique_ptr<QPushButton> deleteBoxButton;
 
 private:
    void setupSignalAndSlots();
@@ -36,11 +37,15 @@ private:
 
 signals:
    void switchBoxType(Box::BoxType type);
+   void boxDeleted();
 
 public slots:
    void switchFrame(std::string& guid);
    void switchBox(std::string& guid);
    void addNewBox(Box& box);
+
+private slots:
+   void deleteBox();
 };
 
 }
