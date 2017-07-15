@@ -70,7 +70,11 @@ namespace SpriteSheet
          Sheet();
          std::map<std::string, std::unique_ptr<Frame>> frames;
 
-         Frame* const getFrame(std::string guid) const;
+        Frame* const getFrame(std::string guid) const;
+        Frame* const firstFrame() const;
+
+        void setFrameName(const std::string& oldName, const std::string& newName);
+
          void removeFrame(const std::string& guid);
          int getSize() const;
          void deserialize(std::experimental::filesystem::path filePath);

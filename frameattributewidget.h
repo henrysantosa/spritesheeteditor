@@ -41,13 +41,13 @@ namespace SpriteSheet {
 
    private:
       std::unique_ptr<QComboBox> frameCurFrameComboBox;
-      std::unique_ptr<QDoubleSpinBox> frameWidthSpinBox;
-      std::unique_ptr<QDoubleSpinBox> frameHeightSpinBox;
-      std::unique_ptr<QDoubleSpinBox> frameXPosSpinBox;
-      std::unique_ptr<QDoubleSpinBox> frameYPosSpinBox;
-      std::unique_ptr<QDoubleSpinBox> frameXOffsetSpinBox;
-      std::unique_ptr<QDoubleSpinBox> frameYOffsetSpinBox;
-      std::unique_ptr<QDoubleSpinBox> frameLenSpinBox;
+      std::unique_ptr<QSpinBox> frameWidthSpinBox;
+      std::unique_ptr<QSpinBox> frameHeightSpinBox;
+      std::unique_ptr<QSpinBox> frameXPosSpinBox;
+      std::unique_ptr<QSpinBox> frameYPosSpinBox;
+      std::unique_ptr<QSpinBox> frameXOffsetSpinBox;
+      std::unique_ptr<QSpinBox> frameYOffsetSpinBox;
+      std::unique_ptr<QSpinBox> frameLenSpinBox;
       std::unique_ptr<QComboBox> nextFrameComboBox;
 
       std::unique_ptr<QLineEdit> frameGuidLineEdit;

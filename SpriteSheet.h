@@ -45,7 +45,7 @@ namespace SDLBase
          std::string guid;
          std::string nextFrameGuid;
 
-         std::vector<Box> boxes;
+         std::unordered_map<std::string, Box> boxes;
       };
       
       using FrameMap = std::unordered_map<std::string, Frame>;

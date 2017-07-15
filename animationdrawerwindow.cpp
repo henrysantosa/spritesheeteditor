@@ -51,9 +51,9 @@ void AnimationDrawerWindow::setupAnimationWidget(Sheet& model)
    QHBoxLayout* animationLayout = new QHBoxLayout();
 
    std::string firstFrameName("");
-   if(model.frames.size() > 0)
+   if(model.getSize() > 0)
    {
-      firstFrameName = (model.frames.begin())->second->guid;
+      firstFrameName = model.firstFrame()->guid;
    }
 
    animationDrawerWidget = std::make_unique<AnimationDrawerWidget>(model, firstFrameName);

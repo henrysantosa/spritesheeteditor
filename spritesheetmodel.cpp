@@ -85,6 +85,15 @@ Frame* const Sheet::getFrame(std::string guid) const
    }
 }
 
+Frame* const Sheet::firstFrame() const
+{
+   if(frames.size() > 0)
+   {
+      return frames.begin()->second.get();
+   }
+   return nullptr;
+}
+
 void Sheet::addNewFrame(std::string& guid, QGraphicsRectItem& boxRect)
 {
    frames[guid] = std::make_unique<Frame>(guid, &boxRect);
@@ -151,18 +160,18 @@ void Sheet::deserialize(std::experimental::filesystem::path filePath)
       curFrame->xOffset = curSFrame.xOffset;
       curFrame->yOffset = curSFrame.yOffset;
 
-      int i = 0;
-      for(const auto& sBox : curSFrame.boxes)
+      for(const auto& pBox : curSFrame.boxes)
       {
+         auto& sBox = pBox.second;
+
          SerializedRectangle sRect {
             sBox.x,
             sBox.y,
             sBox.width,
             sBox.height
          };
-         auto curBox = new Box(std::to_string(i), sBox.type, sRect);
+         auto curBox = new Box(pBox.first, sBox.type, sRect);
          curFrame->boxes.push_back(std::unique_ptr<Box>(curBox));
-         i++;
       }
 
       frames[it.first] = std::unique_ptr<Frame>(curFrame);
@@ -204,7 +213,7 @@ void Sheet::serialize()
          sBox.y = box->sRect.y;
          sBox.width = box->sRect.width;
          sBox.height = box->sRect.height;
-         sFrame.boxes.push_back(sBox);
+         sFrame.boxes[box->guid] = sBox;
       }
 
       spriteSheet.frameMap[guid] = sFrame;
@@ -214,5 +223,27 @@ void Sheet::serialize()
    {
       boost::archive::text_oarchive oa(ofs);
       oa << spriteSheet;
+   }
+}
+
+void Sheet::setFrameName(const std::string& oldName, const std::string &newName)
+{
+   if( frames.find(oldName) == frames.end() )
+      return;
+
+   frames[newName] = std::move(frames[oldName]);
+   frames[newName]->guid = newName;
+   frames.erase(oldName);
+
+   for(auto& framePair: frames)
+   {
+      if(framePair.second != nullptr)
+      {
+         auto& frame = framePair.second;
+         if(frame->nextFrameGuid == oldName)
+         {
+            frame->nextFrameGuid = newName;
+         }
+      }
    }
 }

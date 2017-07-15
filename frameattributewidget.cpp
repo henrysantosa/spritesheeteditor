@@ -13,42 +13,42 @@ FrameAttributeWidget::FrameAttributeWidget(SpriteSheet::Sheet& sheet)
    frameCurFrameComboBox->setInsertPolicy(QComboBox::InsertAlphabetically);
 
    QLabel *widthLabel = new QLabel(tr("Width:"));
-   frameWidthSpinBox = std::make_unique<QDoubleSpinBox>();
-   frameWidthSpinBox->setRange(1.0, INT_MAX);
-   frameWidthSpinBox->setSingleStep(1.0);
+   frameWidthSpinBox = std::make_unique<QSpinBox>();
+   frameWidthSpinBox->setRange(1, INT_MAX);
+   frameWidthSpinBox->setSingleStep(1);
 
    QLabel *heightLabel = new QLabel(tr("Height:"));
-   frameHeightSpinBox = std::make_unique<QDoubleSpinBox>();
-   frameHeightSpinBox->setRange(1.0, INT_MAX);
-   frameHeightSpinBox->setSingleStep(1.0);
+   frameHeightSpinBox = std::make_unique<QSpinBox>();
+   frameHeightSpinBox->setRange(1, INT_MAX);
+   frameHeightSpinBox->setSingleStep(1);
 
    QLabel *xPosLabel = new QLabel(tr("x:"));
-   frameXPosSpinBox = std::make_unique<QDoubleSpinBox>();
-   frameXPosSpinBox->setRange(1.0, INT_MAX);
-   frameXPosSpinBox->setSingleStep(1.0);
+   frameXPosSpinBox = std::make_unique<QSpinBox>();
+   frameXPosSpinBox->setRange(1, INT_MAX);
+   frameXPosSpinBox->setSingleStep(1);
 
    QLabel *yPosLabel = new QLabel(tr("y:"));
-   frameYPosSpinBox = std::make_unique<QDoubleSpinBox>();
-   frameYPosSpinBox->setRange(1.0, INT_MAX);
-   frameYPosSpinBox->setSingleStep(1.0);
+   frameYPosSpinBox = std::make_unique<QSpinBox>();
+   frameYPosSpinBox->setRange(1, INT_MAX);
+   frameYPosSpinBox->setSingleStep(1);
 
    QLabel *xOffsetLabel = new QLabel(tr("x offset:"));
-   frameXOffsetSpinBox = std::make_unique<QDoubleSpinBox>();
+   frameXOffsetSpinBox = std::make_unique<QSpinBox>();
    frameYPosSpinBox->setRange(-INT_MAX/2, INT_MAX/2);
-   frameYPosSpinBox->setSingleStep(1.0);
+   frameYPosSpinBox->setSingleStep(1);
 
    QLabel *yOffsetLabel = new QLabel(tr("y offset:"));
-   frameYOffsetSpinBox = std::make_unique<QDoubleSpinBox>();
+   frameYOffsetSpinBox = std::make_unique<QSpinBox>();
    frameYPosSpinBox->setRange(-INT_MAX/2, INT_MAX/2);
-   frameYPosSpinBox->setSingleStep(1.0);
+   frameYPosSpinBox->setSingleStep(1);
 
    QLabel *nextFrameLabel = new QLabel(tr("Next frame GUID:"));
    nextFrameComboBox = std::make_unique<QComboBox>();
 
    QLabel *frameLenLabel = new QLabel(tr("Number of frames:"));
-   frameLenSpinBox = std::make_unique<QDoubleSpinBox>();
-   frameLenSpinBox->setRange(1.0, INT_MAX);
-   frameLenSpinBox->setSingleStep(1.0);
+   frameLenSpinBox = std::make_unique<QSpinBox>();
+   frameLenSpinBox->setRange(1, INT_MAX);
+   frameLenSpinBox->setSingleStep(1);
 
    boxPrevFrameButton = std::make_unique<QPushButton>("Previous Frame", this);
    frameNextFrameButton = std::make_unique<QPushButton>("Next Frame", this);
@@ -114,40 +114,40 @@ void FrameAttributeWidget::setupSignalAndSlots()
    QObject::connect(frameGuidEditButton.get(), &QPushButton::released,
                     this, &SpriteSheet::FrameAttributeWidget::editFrameName);
 
-//   QObject::connect(frameWidthSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+//   QObject::connect(frameWidthSpinBox.get(), static_cast<void (QSpinBox::*)(double)>(&QSpinBox::valueChanged),
 //                    this, &SpriteSheet::FrameAttributeWidget::updateFrameWidth);
-   QObject::connect(frameWidthSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+   QObject::connect(frameWidthSpinBox.get(), static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
                     [&](double width){
       auto& rect = sheet.frames[curFrameGuid]->boxRect->rect();
       rect.setWidth(width);
       sheet.frames[curFrameGuid]->boxRect->setRect(rect);
    });
 
-   QObject::connect(frameHeightSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+   QObject::connect(frameHeightSpinBox.get(), static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
                     [&](double height){
       auto& rect = sheet.frames[curFrameGuid]->boxRect->rect();
       rect.setHeight(height);
       sheet.frames[curFrameGuid]->boxRect->setRect(rect);
    });
 
-   QObject::connect(frameXPosSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+   QObject::connect(frameXPosSpinBox.get(), static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
                     [&](double xPos){
       auto& rect = sheet.frames[curFrameGuid]->boxRect->rect();
       rect.setX(xPos);
       sheet.frames[curFrameGuid]->boxRect->setRect(rect);
    });
 
-   QObject::connect(frameYPosSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+   QObject::connect(frameYPosSpinBox.get(), static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
                     [&](double yPos){
       auto& rect = sheet.frames[curFrameGuid]->boxRect->rect();
       rect.setY(yPos);
       sheet.frames[curFrameGuid]->boxRect->setRect(rect);
    });
 
-   QObject::connect(frameXOffsetSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+   QObject::connect(frameXOffsetSpinBox.get(), static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
                     [&](double xOffset){sheet.frames[curFrameGuid]->xOffset = xOffset;});
 
-   QObject::connect(frameYOffsetSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+   QObject::connect(frameYOffsetSpinBox.get(), static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
                     [&](double yOffset){sheet.frames[curFrameGuid]->yOffset = yOffset;});
 
    QObject::connect(nextFrameComboBox.get(), static_cast<void (QComboBox::*)(int)>(&QComboBox::activated),
@@ -156,7 +156,7 @@ void FrameAttributeWidget::setupSignalAndSlots()
       sheet.frames[curFrameGuid]->nextFrameGuid = value.toStdString();
    });
 
-   QObject::connect(frameLenSpinBox.get(), static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+   QObject::connect(frameLenSpinBox.get(), static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
                     [&](double frameLen){sheet.frames[curFrameGuid]->frameLen = frameLen;});
 
    QObject::connect(boxPrevFrameButton.get(), &QPushButton::released,
@@ -300,23 +300,10 @@ void FrameAttributeWidget::editFrameName()
 {
    auto newName = frameGuidLineEdit->text().toStdString();
 
-   if(!newName.empty() && newName != curFrameGuid && sheet.frames.find(curFrameGuid) != sheet.frames.end())
+   if(!newName.empty() && newName != curFrameGuid)
    {
-      sheet.frames[newName] = std::move(sheet.frames[curFrameGuid]);
-      sheet.frames[newName]->guid = newName;
-      sheet.frames.erase(curFrameGuid);
-
-      for(auto& framePair: sheet.frames)
-      {
-         auto& frame = framePair.second;
-         if(frame->nextFrameGuid == curFrameGuid)
-         {
-            frame->nextFrameGuid = newName;
-         }
-      }
-
+      sheet.setFrameName(curFrameGuid, newName);
       buildGuidList();
-
       switchFrame(nullptr, *(sheet.frames[newName]));
    }
 }
